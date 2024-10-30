@@ -1,0 +1,17 @@
+package com.spring.gestiondestock.dtos.requests;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class DetailProduitRequest {
+    private String nom_detail;
+    private String description;
+    private Double prix_d_achat;
+    private Double prix_de_vente;
+}
