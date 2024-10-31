@@ -11,8 +11,8 @@ import java.io.Serializable;
 @Setter
 @Builder
 @Accessors(chain = true)
+@ToString
 public class Produit implements Serializable {
     private int id_produit;
     private String nom_produit;
-    private DetailProduit detailProduit;
 }

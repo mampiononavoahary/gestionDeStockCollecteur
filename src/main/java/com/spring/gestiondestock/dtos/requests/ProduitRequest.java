@@ -12,5 +12,4 @@ import lombok.Setter;
 @Setter
 public class ProduitRequest {
     private String nom_produit;
-    private int detailProduit;
 }

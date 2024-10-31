@@ -14,14 +14,12 @@ public class ProduitMapper {
     public Produit toProduit(ProduitRequest produitRequest) {
         return Produit.builder()
                 .nom_produit(produitRequest.getNom_produit())
-                .detailProduit(DetailProduit.builder().id_detail_produit(produitRequest.getDetailProduit()).build())
                 .build();
     }
     public ProduitResponse toProduitResponse(Produit produit) {
         return new ProduitResponse(
                 produit.getId_produit(),
-                produit.getNom_produit(),
-                produit.getDetailProduit()
+                produit.getNom_produit()
         );
     }
 }
