@@ -1,7 +1,6 @@
 package com.spring.gestiondestock.model.enums;
 
-public enum unite {
-    KG,
-    T,
-    AR
+public enum RoleUser {
+    USER,
+    ADMIN
 }

@@ -1,6 +1,6 @@
 package com.spring.gestiondestock.model;
 
-import com.spring.gestiondestock.model.enums.unite;
+import com.spring.gestiondestock.model.enums.Unite;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -17,5 +17,5 @@ public class Transaction implements Serializable {
     private Produit produit;
     private DetailTransaction detailTransaction;
     private Double quantite;
-    private unite unite;
+    private Unite unite;
 }

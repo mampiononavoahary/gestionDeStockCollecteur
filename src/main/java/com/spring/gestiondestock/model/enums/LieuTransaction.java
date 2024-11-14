@@ -1,6 +1,6 @@
 package com.spring.gestiondestock.model.enums;
 
-public enum lieu_transaction {
+public enum LieuTransaction {
     ITAOSY,
     ALATSINAINIKELY,
     AMBATONDRAZAKA
