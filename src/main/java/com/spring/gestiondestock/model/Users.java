@@ -11,7 +11,11 @@ import java.io.Serializable;
 @Builder
 @Accessors(chain = true)
 @ToString
-public class Produit implements Serializable {
-    private int id_produit;
-    private String nom_produit;
+public class Users implements Serializable {
+    private int id_user;
+    private String nom;
+    private String prenom;
+    private String address;
+    private String contact;
+    private String image;
 }

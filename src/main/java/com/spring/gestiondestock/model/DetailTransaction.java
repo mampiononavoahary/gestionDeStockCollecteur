@@ -1,6 +1,7 @@
 package com.spring.gestiondestock.model;
 
 import com.spring.gestiondestock.enums.TypeDeTransaction;
+import com.spring.gestiondestock.model.enums.lieu_transaction;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -16,8 +17,8 @@ import java.security.Timestamp;
 public class DetailTransaction implements Serializable {
     private int id_detail_transaction;
     private TypeDeTransaction typeDeTransaction;
-    private Double quantite;
     private Timestamp date_transaction;
-    private String lieu_de_transaction;
-    private Clients clients;
+    private lieu_transaction lieu_de_transaction;
+    private Clients id_client;
+    private Users id_user;
 }
