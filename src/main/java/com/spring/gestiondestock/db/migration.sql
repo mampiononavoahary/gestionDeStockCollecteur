@@ -61,5 +61,6 @@ create table if not exists stock(
     quantite_stock double precision,
     unite unite
 );
+alter table users add column nom_d_utilisateur varchar(100);
 
 
