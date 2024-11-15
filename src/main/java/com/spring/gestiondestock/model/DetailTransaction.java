@@ -1,6 +1,6 @@
 package com.spring.gestiondestock.model;
 
-import com.spring.gestiondestock.enums.TypeDeTransaction;
+import com.spring.gestiondestock.model.enums.TypeDeTransaction;
 import com.spring.gestiondestock.model.enums.LieuTransaction;
 import lombok.*;
 import lombok.experimental.Accessors;

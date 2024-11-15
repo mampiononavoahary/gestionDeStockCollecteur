@@ -2,6 +2,7 @@ package com.spring.gestiondestock.repositories.impl;
 
 import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.DetailProduit;
+import com.spring.gestiondestock.model.enums.Unite;
 import com.spring.gestiondestock.repositories.InterfaceDetailProduits;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -24,11 +25,12 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
     private DetailProduit extractDetail(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_detail_produit");
         String nom = resultSet.getString("nom_detail");
+        String symbol = resultSet.getString("symbole");
         String description = resultSet.getString("description");
         Double prix_d_achat = resultSet.getDouble("prix_d_achat");
         Double prix_de_vente = resultSet.getDouble("prix_de_vente");
-
-        return new DetailProduit(id, nom, description, prix_d_achat, prix_de_vente);
+        Unite unite = resultSet.getObject("unite", Unite.class);
+        return new DetailProduit(id, nom,symbol, description, prix_d_achat, prix_de_vente,unite);
     }
     @Override
     public List<DetailProduit> getDetailProduits() throws SQLException, ClassNotFoundException {
@@ -49,13 +51,15 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
 
     @Override
     public DetailProduit toSave(DetailProduit toSave) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO detail_produit (nom_detail,description,prix_d_achat,prix_de_vente) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO detail_produit (nom_detail,symbol,description,prix_d_achat,prix_de_vente,unite) VALUES (?,?,?,?,?,?)";
         getConnection();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1,toSave.getNom_detail());
-            statement.setString(2,toSave.getDescription());
-            statement.setDouble(3,toSave.getPrix_d_achat());
-            statement.setDouble(4,toSave.getPrix_de_vente());
+            statement.setString(2,toSave.getSymbole());
+            statement.setString(3,toSave.getDescription());
+            statement.setDouble(4,toSave.getPrix_d_achat());
+            statement.setDouble(5,toSave.getPrix_de_vente());
+            statement.setString(6,toSave.getUnite().toString());
             int rows = statement.executeUpdate();
             if (rows > 0) {
                 log.info("Rows affected: {}", rows);
@@ -71,10 +75,11 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         getConnection();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1,toUpdate.getNom_detail());
-            statement.setString(2,toUpdate.getDescription());
-            statement.setDouble(3,toUpdate.getPrix_d_achat());
-            statement.setDouble(4,toUpdate.getPrix_de_vente());
-            statement.setInt(5,toUpdate.getId_detail_produit());
+            statement.setString(2,toUpdate.getSymbole());
+            statement.setString(3,toUpdate.getDescription());
+            statement.setDouble(4,toUpdate.getPrix_d_achat());
+            statement.setDouble(5,toUpdate.getPrix_de_vente());
+            statement.setInt(6,toUpdate.getId_detail_produit());
             int rows = statement.executeUpdate();
             if (rows > 0) {
                 log.info("detail produit mis à jours: {}", rows);
