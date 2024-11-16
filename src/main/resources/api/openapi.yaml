@@ -9,7 +9,7 @@ servers:
     description: Serveur local
 
 paths:
-  /users:
+  /api/users:
     get:
       summary: Récupérer tous les utilisateurs
       responses:
@@ -347,8 +347,74 @@ paths:
       responses:
         '201':
           description: Transaction créée avec succès
+  /api/transaction/{id_transaction}:
+    get:
+      summary: Filtrer la transaction par id
+      parameters:
+        - name: id_transaction
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: transaction filtrer par id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail_transaction'
+    put:
+      summary: mise à jour de la transaction
+      parameters:
+        - name: id_transaction
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detail_transaction'
+      responses:
+        '201':
+          description: transaction mis à jour
+    delete:
+      summary: Supprimer un transaction par id
+      parameters:
+        - name: id_transaction
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Transaction supprimer
+  /api/detailtransaction:
+    get:
+      summary: transaction plus détailés
+      responses:
+        '200':
+          description: Listes des détail de transaction
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Detail_transaction'
+    post:
+      summary: Ajouter une detail de transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detail_transaction'
+      responses:
+        '201':
+          description: Détail transaction créee avec success
 
-  /stock:
+
+  /api/stock:
     get:
       summary: Récupérer l'état du stock
       responses:
@@ -370,7 +436,7 @@ paths:
       responses:
         '201':
           description: Stock mis à jour avec succès
-  /stock/lieu/{lieu_stock}:
+  /api/stock/lieu/{lieu_stock}:
     get:
       summary: stock par lieu
       parameters:
