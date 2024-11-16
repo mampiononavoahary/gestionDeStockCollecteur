@@ -20,6 +20,7 @@ public class ProduitController {
         this.produitService = produitService;
     }
 
+    @CrossOrigin(origins = "http://localhost:63342")
     @GetMapping("/produits")
     public List<ProduitResponse> getAllProduits() throws SQLException, ClassNotFoundException {
         return produitService.findAll();

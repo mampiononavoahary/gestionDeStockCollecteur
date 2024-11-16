@@ -1,0 +1,533 @@
+openapi: 3.0.0
+info:
+  title: Gestion de Stock API
+  version: 1.0.0
+  description: API pour gérer les utilisateurs, les produits, les transactions et le stock.
+
+servers:
+  - url: http://localhost:8080
+    description: Serveur local
+
+paths:
+  /users:
+    get:
+      summary: Récupérer tous les utilisateurs
+      responses:
+        '200':
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Créer un nouvel utilisateur
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+  /api/users/{id_users}:
+      get:
+        summary: récuperer l'urilisateurs par l'id_user
+        parameters:
+          - name: id_users
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: utilisateur récuperer
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+      put:
+        summary: mettre à jour l'utilisateur par l'id_user
+        parameters:
+          - name: id_users
+            in: path
+            required: true
+            schema:
+              type: integer
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        responses:
+          '200':
+            description: utilisateur mis à jours
+      delete:
+        summary: supprimer l'utilisateur
+        parameters:
+          - name: id_users
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '204':
+            description: Utilisateur supprimer avec success
+  /api/users/name/{nom}:
+     get:
+       summary: récuperer l'utilisateur par nom
+       parameters:
+         - name: nom
+           in: path
+           required: true
+           schema:
+             type: string
+       responses:
+         '200':
+           description: Utilisateur récuperer par nom
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/User'
+  /api/detailproduits:
+    get:
+      summary: Récupérer tous les détails des produits
+      responses:
+        '200':
+          description: Liste des détails des produits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetailProduit'
+    post:
+      summary: Ajouter un nouveau détail de produit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetailProduit'
+      responses:
+        '201':
+          description: Détail de produit créé avec succès
+  /api/detailproduits/{id_detail_produit}:
+    get:
+      summary: Récupérer un détail de produit par ID
+      parameters:
+        - name: id_detail_produit
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Détail de produit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailProduit'
+
+    put:
+      summary: Mettre à jour un détail de produit par ID
+      parameters:
+        - name: id_detail_produit
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetailProduit'
+      responses:
+        '200':
+          description: Détail de produit mis à jour avec succès
+
+    delete:
+      summary: Supprimer un détail de produit par ID
+      parameters:
+        - name: id_detail_produit
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Détail de produit supprimé avec succès
+
+
+  /api/detailproduits/name/{nom_detail}:
+    get:
+      summary: Récupérer un détail de produit par nom
+      parameters:
+        - name: nom_detail
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détail de produit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailProduit'
+
+
+  /api/clients:
+    get:
+      summary: Récupérer tous les clients
+      responses:
+        '200':
+          description: Liste des clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+    post:
+      summary: Ajouter un nouveau client
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+      responses:
+        '201':
+          description: Client créé avec succès
+  /api/clients/{id_clients}:
+      get:
+        summary: Récuperer les clients par l'id_clients
+        parameters:
+          - name: id_clients
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description: clients récuperer
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Client'
+      put:
+        summary: Metre à jour un client
+        parameters:
+          - name: id_clients
+            in: path
+            required: true
+            schema:
+              type: integer
+        requestBody:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        responses:
+          '200':
+            description: Clients mis à jour avec succes
+      delete:
+        summary: Supprimer un client par l'id_client
+        parameters:
+          - name: id_clients
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '204':
+            description: clients supprimer avec success
+  /api/clients/name/{nom}:
+      get:
+        summary: Récuperer un client par nom
+        parameters:
+          - name: nom
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Clients récuperer
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Client'
+  /api/produit:
+    get:
+      summary: List des tous les produits
+      responses:
+        '200':
+          description: tous les produits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produit'
+    post:
+      summary: Ajouter un produit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produit'
+      responses:
+        '201':
+          description: Produit créee avec success
+  /api/produit/{id_produit}:
+    put:
+      summary: Mise à jour de produit
+      parameters:
+        - name: id_produit
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produit'
+      responses:
+        '201':
+          description: Produit Mis à jour avec success
+    delete:
+      summary: Supprimer le produit
+      parameters:
+        - name: id_produit
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Produit Supprimer avec success
+  /api/produit/name/{nom_produit}:
+    get:
+      summary: Récuperer le produit par nom
+      parameters:
+        - name: nom_produit
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: produit récuperer par nom
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produit'
+
+  /api/transaction:
+    get:
+      summary: Récupérer toutes les transactions
+      responses:
+        '200':
+          description: Liste des transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+    post:
+      summary: Créer une nouvelle transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+      responses:
+        '201':
+          description: Transaction créée avec succès
+
+  /stock:
+    get:
+      summary: Récupérer l'état du stock
+      responses:
+        '200':
+          description: État du stock
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Stock'
+    post:
+      summary: Mettre à jour le stock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Stock'
+      responses:
+        '201':
+          description: Stock mis à jour avec succès
+  /stock/lieu/{lieu_stock}:
+    get:
+      summary: stock par lieu
+      parameters:
+        - name: lieu_stock
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: liste des stock par lieu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id_user:
+          type: integer
+        nom:
+          type: string
+        prenom:
+          type: string
+        address:
+          type: string
+        contact:
+          type: string
+        image:
+          type: string
+        role:
+          type: string
+          enum:
+            - USER
+            - ADMIN
+        nom_d_utilisateur:
+          type: string
+        mot_de_passe:
+          type: string
+
+    DetailProduit:
+      type: object
+      properties:
+        id_detail_produit:
+          type: integer
+        nom_detail:
+          type: string
+        symbole:
+          type: string
+        description:
+          type: string
+        prix_d_achat:
+          type: number
+          format: double
+        prix_de_vente:
+          type: number
+          format: double
+        unite:
+          type: string
+          enum:
+            - KG
+            - T
+            - AR
+
+    Client:
+      type: object
+      properties:
+        id_clients:
+          type: integer
+        nom:
+          type: string
+        prenom:
+          type: string
+        adresse:
+          type: string
+        telephone:
+          type: string
+
+    Transaction:
+      type: object
+      properties:
+        id_transaction:
+          type: integer
+        id_produit:
+          type: integer
+        id_detail_transaction:
+          type: integer
+        quantite:
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+            - PAYE
+            - EN_ATTENTE
+
+    Stock:
+      type: object
+      properties:
+        id_stock:
+          type: integer
+        lieu_stock:
+          type: string
+          enum:
+            - ITAOSY
+            - ALATSINAINIKELY
+            - AMBATONDRAZAKA
+        id_produit_avec_detail:
+          type: integer
+        quantite_stock:
+          type: number
+          format: double
+        unite:
+          type: string
+          enum:
+            - KG
+            - T
+            - AR
+    Detail_transaction:
+      type: object
+      properties:
+        id_detail_transaction:
+          type: integer
+        type_de_transaction:
+          type: string
+          enum:
+            - ENTRE
+            - SORTIE
+        date_de_transaction:
+          type: string
+          format: date
+        lieu_de_transaction:
+          type: string
+          enum:
+            - ITAOSY
+            - ALATSINAINIKELY
+            - AMBATONDRAZAKA
+        id_client:
+          type: integer
+        id_user:
+          type: integer
+    Produit:
+      type: object
+      properties:
+        id_produit:
+          type: integer
+        nom_produit:
+          type: string
+    Produit_avec_detail:
+      type: object
+      properties:
+        id_produit_avec_detail:
+          type: integer
+        id_produit:
+          type: integer
+        id_detail_produit:
+          type: integer

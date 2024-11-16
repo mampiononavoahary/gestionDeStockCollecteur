@@ -6,6 +6,7 @@ create type role_user as enum ('USER','ADMIN');
 create type unite as enum('KG','T','AR');
 create type type_de_transaction as enum ('ENTRE', 'SORTIE');
 create type lieu_transaction as enum('ITAOSY','ALATSINAINIKELY','AMBATONDRAZAKA');
+create type status as enum('PAYE','EN_ATTENTE');
 create table if not exists users(
                       id_user serial primary key ,
                       nom varchar(100),
@@ -13,7 +14,9 @@ create table if not exists users(
                       address varchar(100),
                       contact varchar(100),
                       image varchar(200),
-                      role role_user
+                      role role_user,
+                      nom_d_utilisateur varchar(100),
+                      mot_de_passe varchar(100)
 );
 create table if not exists detail_produit(
                      id_detail_produit serial primary key ,
@@ -52,7 +55,8 @@ create table if not exists transaction(
     id_transaction serial primary key ,
     id_produit serial references produit(id_produit),
     id_detail_transaction serial references  detail_transaction(id_detail_transaction),
-    quantite double precision
+    quantite double precision,
+    status status
 );
 create table if not exists stock(
     id_stock serial primary key ,
@@ -61,6 +65,5 @@ create table if not exists stock(
     quantite_stock double precision,
     unite unite
 );
-alter table users add column nom_d_utilisateur varchar(100);
 
 
