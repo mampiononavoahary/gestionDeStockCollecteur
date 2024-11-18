@@ -28,8 +28,8 @@ public class ClientsController {
         return clientsService.getAllClients();
     }
 
-    @GetMapping("/{id}")
-    public ClientsResponse getClientById(@PathVariable("id") int id) throws SQLException, ClassNotFoundException {
+    @GetMapping("/{id_clients}")
+    public ClientsResponse getClientById(@PathVariable("id_clients") int id) throws SQLException, ClassNotFoundException {
         return clientsService.getAllClientsByClientId(id);
     }
 
@@ -38,18 +38,18 @@ public class ClientsController {
         return clientsService.createClients(client);
     }
 
-    @PostMapping("/batch")
+    @PostMapping("/btach")
     public List<ClientsResponse> addManyClients(@RequestBody @Validated List<ClientsRequest> clients) throws SQLException, ClassNotFoundException {
         return clientsService.saveAllClients(clients);
     }
 
-    @PutMapping("/{id}")
-    public ClientsResponse updateClient(@PathVariable("id") int id, @RequestBody @Validated Clients client) throws SQLException, ClassNotFoundException {
+    @PutMapping("/{id_clients}")
+    public ClientsResponse updateClient(@PathVariable("id_clients") int id, @RequestBody @Validated Clients client) throws SQLException, ClassNotFoundException {
         return clientsService.updateClients(client, id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteClient(@PathVariable("id") int id) throws SQLException, ClassNotFoundException {
+    @DeleteMapping("/{id_clients}")
+    public void deleteClient(@PathVariable("id_clients") int id) throws SQLException, ClassNotFoundException {
         clientsService.deleteClients(id);
     }
 }

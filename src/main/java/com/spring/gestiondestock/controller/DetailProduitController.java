@@ -24,11 +24,11 @@ public class DetailProduitController {
     public DetailProduitResponse addDetailProduit(@RequestBody DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
         return detailProduitService.createDetailProduit(detailProduitRequest);
     }
-    @PutMapping("/put")
+    @PutMapping("/{id_detail}")
     public DetailProduitResponse updateDetailProduit(@RequestBody DetailProduit detailProduit) throws SQLException, ClassNotFoundException {
         return detailProduitService.updateDetailProduit(detailProduit, detailProduit.getId_detail_produit());
     }
-    @DeleteMapping("/delete/{id_detail_produit}")
+    @DeleteMapping("/{id_detail_produit}")
     public DetailProduitResponse deleteDetailProduit(@PathVariable String id_detail_produit) throws SQLException, ClassNotFoundException {
         return detailProduitService.deleteDetailProduit(Integer.parseInt(id_detail_produit));
     }

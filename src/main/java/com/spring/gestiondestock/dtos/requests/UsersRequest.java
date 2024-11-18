@@ -19,6 +19,6 @@ public class UsersRequest {
     private String contact;
     private String image;
     private RoleUser role;
-    private String nom_d_utilisateur;
-    private String mot_de_passe;
+    private String username;
+    private String password;
 }

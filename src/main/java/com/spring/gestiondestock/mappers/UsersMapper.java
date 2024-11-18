@@ -17,8 +17,8 @@ public class UsersMapper {
                 .contact(usersRequest.getContact())
                 .image(usersRequest.getImage())
                 .role(usersRequest.getRole())
-                .nom_d_utilisateur(usersRequest.getNom_d_utilisateur())
-                .mot_de_passe(usersRequest.getMot_de_passe())
+                .username(usersRequest.getUsername())
+                .password(usersRequest.getPassword())
                 .build();
     }
     public UsersResponse toUsersResponse(Users users) {
@@ -30,8 +30,8 @@ public class UsersMapper {
                 users.getContact(),
                 users.getImage(),
                 users.getRole(),
-                users.getNom_d_utilisateur(),
-                users.getMot_de_passe()
+                users.getUsername(),
+                users.getPassword()
         );
     }
 }

@@ -56,6 +56,7 @@ create table if not exists transaction(
     id_produit serial references produit(id_produit),
     id_detail_transaction serial references  detail_transaction(id_detail_transaction),
     quantite double precision,
+    unite unite,
     status status
 );
 create table if not exists stock(
