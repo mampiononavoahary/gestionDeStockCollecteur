@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/detailproduits")
+@CrossOrigin(origins = "http://localhost:63342")
 public class DetailProduitController {
     private static DetailProduitServiceImpl detailProduitService;
     public DetailProduitController(DetailProduitServiceImpl detailProduitService) {

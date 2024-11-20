@@ -29,7 +29,11 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         String description = resultSet.getString("description");
         Double prix_d_achat = resultSet.getDouble("prix_d_achat");
         Double prix_de_vente = resultSet.getDouble("prix_de_vente");
-        Unite unite = resultSet.getObject("unite", Unite.class);
+        String uniteStr = resultSet.getString("unite");
+        Unite unite = null;
+        if (uniteStr != null) {
+            unite = Unite.valueOf(uniteStr);  // Conversion explicite en enum
+        }
         return new DetailProduit(id, nom,symbol, description, prix_d_achat, prix_de_vente,unite);
     }
     @Override

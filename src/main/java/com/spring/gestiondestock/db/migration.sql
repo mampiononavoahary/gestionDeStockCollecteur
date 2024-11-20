@@ -15,8 +15,8 @@ create table if not exists users(
                       contact varchar(100),
                       image varchar(200),
                       role role_user,
-                      nom_d_utilisateur varchar(100),
-                      mot_de_passe varchar(100)
+                      username varchar(100),
+                      password varchar(100)
 );
 create table if not exists detail_produit(
                      id_detail_produit serial primary key ,
@@ -51,9 +51,9 @@ create table if not exists produit_avec_detail(
     id_produit serial references produit(id_produit),
     id_detail_produit serial references detail_produit(id_detail_produit)
 );
-create table if not exists transaction(
+create table if not exists transactions(
     id_transaction serial primary key ,
-    id_produit serial references produit(id_produit),
+    id_produit_avec_detail serial references produit_avec_detail(id_produit_avec_detail),
     id_detail_transaction serial references  detail_transaction(id_detail_transaction),
     quantite double precision,
     unite unite,

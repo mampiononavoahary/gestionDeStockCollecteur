@@ -22,25 +22,37 @@ import java.util.List;
 @Table(name = "users") // Spécifie la table correspondante
 public class Users implements UserDetails, Serializable {
 
-    @Id // Indique le champ ID
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Génération automatique de l'ID
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_user")
     private int id_user;
 
+    @Column(name = "nom")
     private String nom;
+
+    @Column(name = "prenom")
     private String prenom;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "contact")
     private String contact;
+
+    @Column(name = "image")
     private String image;
 
-    @Enumerated(EnumType.ORDINAL) // Enregistre l'enum comme un entier dans la base
+    @Enumerated(EnumType.STRING) // IMPORTANT : Assurez-vous de spécifier EnumType.STRING
+    @Column(name = "role")
     private RoleUser role;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
-
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
+
+    // Getters et setters
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
