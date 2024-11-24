@@ -9,11 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -24,10 +19,10 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfig corsConfig) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Désactiver CSRF
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurer CORS
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // Configurer CORS
                 .authorizeRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll() // Autoriser les requêtes vers /api/auth/**
                         .anyRequest().authenticated()) // Les autres requêtes nécessitent une authentification
@@ -37,18 +32,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // URL de votre frontend
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Méthodes autorisées
-        config.setAllowedHeaders(List.of("*")); // Autoriser tous les en-têtes
-        config.setAllowCredentials(true); // Autoriser les cookies ou les en-têtes d'authentification
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
     }
 }
 

@@ -1,7 +1,19 @@
+# Étape 1 : Construire l'application
 FROM maven:3.8.3-openjdk-17 AS build
-COPY . .
+WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires pour installer les dépendances Maven
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copier le reste du projet
+COPY src ./src
 RUN mvn clean package -DskipTests
+
+# Étape 2 : Créer une image finale pour exécuter l'application
 FROM openjdk:17.0.1-jdk-slim
-COPY --from=build /target/gestionDeStock-0.0.1-SNAPSHOT.jar gestionDeStock.jar
+WORKDIR /app
+
+COPY --from=build /app/target/gestionDeStock-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","gestionDeStock.jar"]
+ENTRYPOINT ["java","-jar","gestionDeStock-0.0.1-SNAPSHOT.jar"]
