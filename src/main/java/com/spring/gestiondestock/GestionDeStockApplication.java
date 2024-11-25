@@ -10,7 +10,6 @@ public class GestionDeStockApplication {
     public static void main(String[] args) {
         // Charger le fichier .env au démarrage de l'application
         Dotenv dotenv = Dotenv.load();
-
         // Utilisez les variables d'environnement chargées
         String dbUrl = dotenv.get("DB_URL");
         String dbUsername = dotenv.get("DB_USERNAME");

@@ -1,4 +1,5 @@
 # Étape 1 : Construire l'application
+# Étape 1 : Construction de l'application
 FROM maven:3.8.3-openjdk-17 AS build
 WORKDIR /app
 
@@ -14,6 +15,9 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17.0.1-jdk-slim
 WORKDIR /app
 
+# Copier le fichier .env si vous l'utilisez
+COPY .env ./
+# Copier le fichier JAR généré
 COPY --from=build /app/target/gestionDeStock-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","gestionDeStock-0.0.1-SNAPSHOT.jar"]

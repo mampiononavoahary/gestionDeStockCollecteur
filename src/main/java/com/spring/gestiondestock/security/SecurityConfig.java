@@ -17,23 +17,21 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final CorsConfig corsConfig;  // Ajoutez ceci
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfig corsConfig) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Désactiver CSRF
-                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // Configurer CORS
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // Appliquer CORS à la sécurité
                 .authorizeRequests(authz -> authz
-                        .requestMatchers("/api/auth/**").permitAll() // Autoriser les requêtes vers /api/auth/**
-                        .anyRequest().authenticated()) // Les autres requêtes nécessitent une authentification
+                        .requestMatchers("/api/auth/**").permitAll()  // Autoriser les routes d'authentification
+                        .anyRequest().authenticated())  // Autres routes nécessitent une authentification
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sessions sans état
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Stateless
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 }
-
-
-
