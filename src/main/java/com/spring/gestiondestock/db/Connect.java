@@ -10,7 +10,7 @@ public class Connect {
     private String password;
 
     public Connect() {
-        this.url = System.getenv("JDBC_URL");
+        this.url = System.getenv("DB_URL");
         this.username = System.getenv("DB_USERNAME");
         this.password = System.getenv("DB_PASSWORD");
     }
