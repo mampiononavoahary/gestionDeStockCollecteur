@@ -4,13 +4,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Cookie;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "https://gestionofstock.vercel.app", allowCredentials = "true")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;

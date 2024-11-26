@@ -27,7 +27,7 @@ public class ExtractSumTransactionRepository {
                 "        JOIN\n" +
                 "    detail_produit dp ON pad.id_detail_produit = dp.id_detail_produit\n" +
                 "WHERE\n" +
-                "    dt.type_de_transaction = 'ENTRE';";
+                "    dt.type_de_transaction = 'ENTRE' AND t.status= 'PAYE'\n;";
         getConnection();
         try (PreparedStatement ps = connection.prepareStatement(sql)){
             ResultSet rs = ps.executeQuery();

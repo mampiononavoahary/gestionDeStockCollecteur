@@ -3,6 +3,7 @@ create database gestiondestock;
 \c gestiondestock;
 
 create type role_user as enum ('USER','ADMIN');
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 create type unite as enum('KG','T','AR');
 create type type_de_transaction as enum ('ENTRE', 'SORTIE');
 create type lieu_transaction as enum('ITAOSY','ALATSINAINIKELY','AMBATONDRAZAKA');
@@ -15,7 +16,7 @@ create table if not exists users(
                       contact varchar(100),
                       image varchar(200),
                       role role_user,
-                      username varchar(100),
+                      username varchar(100) unique,
                       password varchar(100)
 );
 create table if not exists detail_produit(
@@ -23,8 +24,8 @@ create table if not exists detail_produit(
                      nom_detail varchar(200),
                     symbole varchar(5),
                     description varchar(200),
-                    prix_d_achat double precision,
-                    prix_de_vente double precision,
+                    prix_d_achat double precision check ( prix_d_achat >=0),
+                    prix_de_vente double precision check ( prix_de_vente >=0 ),
                     unite unite
 );
 create table if not exists clients(
@@ -36,11 +37,11 @@ create table if not exists clients(
 );
 create table if not exists detail_transaction(
     id_detail_transaction serial primary key ,
+    uuid_detail UUID DEFAULT uuid_generate_v4(),
     type_de_transaction type_de_transaction,
     date_de_transaction timestamp,
     lieu_de_transaction lieu_transaction,
-    id_client serial references clients(id_clients),
-    id_user serial references users(id_user)
+    id_client integer references clients(id_clients)
 );
 create table if not exists produit(
     id_produit serial primary key ,
@@ -55,7 +56,7 @@ create table if not exists transactions(
     id_transaction serial primary key ,
     id_produit_avec_detail serial references produit_avec_detail(id_produit_avec_detail),
     id_detail_transaction serial references  detail_transaction(id_detail_transaction),
-    quantite double precision,
+    quantite double precision check ( quantite>0 ),
     unite unite,
     status status
 );
@@ -66,5 +67,6 @@ create table if not exists stock(
     quantite_stock double precision,
     unite unite
 );
+
 
 
