@@ -2,6 +2,7 @@ package com.spring.gestiondestock.repositories.impl;
 
 import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.DetailProduit;
+import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.enums.Unite;
 import com.spring.gestiondestock.repositories.InterfaceDetailProduits;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +31,12 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         Double prix_d_achat = resultSet.getDouble("prix_d_achat");
         Double prix_de_vente = resultSet.getDouble("prix_de_vente");
         String uniteStr = resultSet.getString("unite");
+        List<ProduitAvecDetail> produitAvecDetails = new ArrayList<>();
         Unite unite = null;
         if (uniteStr != null) {
             unite = Unite.valueOf(uniteStr);  // Conversion explicite en enum
         }
-        return new DetailProduit(id, nom,symbol, description, prix_d_achat, prix_de_vente,unite);
+        return new DetailProduit(id, nom,symbol, description, prix_d_achat, prix_de_vente,unite,produitAvecDetails);
     }
     @Override
     public List<DetailProduit> getDetailProduits() throws SQLException, ClassNotFoundException {

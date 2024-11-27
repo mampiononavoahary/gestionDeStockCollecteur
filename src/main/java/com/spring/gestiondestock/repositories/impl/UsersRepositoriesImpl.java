@@ -27,8 +27,8 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
         String contact = resultSet.getString("contact");
         String image = resultSet.getString("image");
         RoleUser role = RoleUser.valueOf(resultSet.getString("role"));
-        String nom_d_utilisateur = resultSet.getString("nom_d_utilisateur");
-        String mot_de_passe = resultSet.getString("mot_de_passe");
+        String nom_d_utilisateur = resultSet.getString("username");
+        String mot_de_passe = resultSet.getString("password");
 
         return new Users(id,nom,prenom,address,contact,image,role,nom_d_utilisateur,mot_de_passe);
     }

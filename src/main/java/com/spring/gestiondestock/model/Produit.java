@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,4 +15,5 @@ import java.io.Serializable;
 public class Produit implements Serializable {
     private int id_produit;
     private String nom_produit;
+    private List<ProduitAvecDetail> listProduitAvecDetail;
 }

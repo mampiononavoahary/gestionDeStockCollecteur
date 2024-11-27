@@ -19,7 +19,8 @@ public class ProduitMapper {
     public ProduitResponse toProduitResponse(Produit produit) {
         return new ProduitResponse(
                 produit.getId_produit(),
-                produit.getNom_produit()
+                produit.getNom_produit(),
+                produit.getListProduitAvecDetail()
         );
     }
 }

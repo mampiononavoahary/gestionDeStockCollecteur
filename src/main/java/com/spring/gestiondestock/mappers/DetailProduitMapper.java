@@ -27,7 +27,8 @@ public class DetailProduitMapper {
                 detailProduit.getDescription(),
                 detailProduit.getPrix_d_achat(),
                 detailProduit.getPrix_de_vente(),
-                detailProduit.getUnite()
+                detailProduit.getUnite(),
+                detailProduit.getListProduitAvecDetail()
         );
     }
 }

@@ -3,6 +3,7 @@ package com.spring.gestiondestock.repositories.impl;
 import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.DetailProduit;
 import com.spring.gestiondestock.model.Produit;
+import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.repositories.InterfacecProduit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
     private Produit extractProduitFromResultSet(ResultSet resultSet) throws SQLException {
         int id_produit = resultSet.getInt("id_produit");
         String nom_produit = resultSet.getString("nom_produit");
-        return new Produit(id_produit, nom_produit);
+        List<ProduitAvecDetail> produitAvecDetails = new ArrayList<>();
+        return new Produit(id_produit, nom_produit,produitAvecDetails);
     }
     @Override
     public List<Produit> getProduits() throws SQLException, ClassNotFoundException {

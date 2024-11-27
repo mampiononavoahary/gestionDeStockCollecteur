@@ -22,7 +22,9 @@ public class ProduitAvecDetailMapper {
         return new ProduitAvecDetailResponse(
                 produitAvecDetail.getId_produit_avec_detail(),
                 produitAvecDetail.getId_produit(),
-                produitAvecDetail.getId_detail_produit()
+                produitAvecDetail.getId_detail_produit(),
+                produitAvecDetail.getTransactionList(),
+                produitAvecDetail.getStockList()
         );
     }
 }

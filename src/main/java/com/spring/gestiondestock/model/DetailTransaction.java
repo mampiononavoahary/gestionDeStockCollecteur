@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.security.Timestamp;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +21,5 @@ public class DetailTransaction implements Serializable {
     private Timestamp date_transaction;
     private LieuTransaction lieu_de_transaction;
     private Clients id_client;
+    private List<Transaction> list_transaction;
 }

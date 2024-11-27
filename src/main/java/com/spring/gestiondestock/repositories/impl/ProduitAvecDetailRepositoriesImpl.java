@@ -1,9 +1,7 @@
 package com.spring.gestiondestock.repositories.impl;
 
 import com.spring.gestiondestock.db.Connect;
-import com.spring.gestiondestock.model.DetailProduit;
-import com.spring.gestiondestock.model.Produit;
-import com.spring.gestiondestock.model.ProduitAvecDetail;
+import com.spring.gestiondestock.model.*;
 import com.spring.gestiondestock.repositories.InterfaceProduitAvecDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +26,10 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         int id = resultSet.getInt("id");
         Produit produit = new Produit();
         DetailProduit detailProduit = new DetailProduit();
+        List<Transaction> transactionList = new ArrayList<>();
+        List<Stock> stockList = new ArrayList<>();
 
-        return new ProduitAvecDetail(id, produit, detailProduit);
+        return new ProduitAvecDetail(id, produit, detailProduit,transactionList,stockList);
     }
     @Override
     public List<ProduitAvecDetail> getProduitAvecDetail() throws SQLException, ClassNotFoundException {

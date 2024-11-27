@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class Stock implements Serializable {
     private int id_stock;
     private LieuTransaction lieu_transaction;
-    private Produit id_produit;
+    private ProduitAvecDetail produitAvecDetail;
     private Double quantite_stock;
     private Unite unite;
 }

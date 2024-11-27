@@ -3,6 +3,7 @@ package com.spring.gestiondestock.repositories.impl;
 import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.mappers.ClientsMapper;
 import com.spring.gestiondestock.model.Clients;
+import com.spring.gestiondestock.model.DetailTransaction;
 import com.spring.gestiondestock.repositories.InterfaceClients;
 import org.springframework.stereotype.Repository;
 
@@ -33,8 +34,9 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
         String prenom = rs.getString("prenom");
         String adresse = rs.getString("adresse");
         String telephone = rs.getString("telephone");
+        List<DetailTransaction> detailTransactions = new ArrayList<>();
 
-        return new Clients(id, nom, prenom, adresse, telephone);
+        return new Clients(id, nom, prenom, adresse, telephone,detailTransactions);
     }
     @Override
     public List<Clients> findAll() throws SQLException, ClassNotFoundException {

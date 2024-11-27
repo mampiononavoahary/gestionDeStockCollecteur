@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +19,5 @@ public class Clients implements Serializable {
     private String prenom;
     private String adresse;
     private String telephone;
+    private List<DetailTransaction> detailTransactions;
 }

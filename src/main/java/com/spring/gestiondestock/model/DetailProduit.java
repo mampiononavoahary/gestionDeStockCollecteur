@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +22,5 @@ public class DetailProduit implements Serializable {
     private Double prix_d_achat;
     private Double prix_de_vente;
     private Unite unite;
+    private List<ProduitAvecDetail> listProduitAvecDetail;
 }

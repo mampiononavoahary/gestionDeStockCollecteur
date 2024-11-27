@@ -24,7 +24,8 @@ public class ClientsMapper {
                 clients.getNom(),
                 clients.getPrenom(),
                 clients.getAdresse(),
-                clients.getTelephone()
+                clients.getTelephone(),
+                clients.getDetailTransactions()
         );
     }
 }

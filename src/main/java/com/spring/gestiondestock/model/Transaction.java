@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class Transaction implements Serializable {
     private int id_transaction;
-    private Produit produit;
+    private ProduitAvecDetail produitAvecDetail;
     private DetailTransaction detailTransaction;
     private Double quantite;
     private Unite unite;
