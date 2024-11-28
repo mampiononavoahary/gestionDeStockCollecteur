@@ -19,12 +19,9 @@ public class ProduitAvecDetailMapper {
     }
 
     public ProduitAvecDetailResponse toResponse(ProduitAvecDetail produitAvecDetail) {
-        return new ProduitAvecDetailResponse(
-                produitAvecDetail.getId_produit_avec_detail(),
-                produitAvecDetail.getId_produit(),
-                produitAvecDetail.getId_detail_produit(),
-                produitAvecDetail.getTransactionList(),
-                produitAvecDetail.getStockList()
-        );
+        return ProduitAvecDetailResponse.builder()
+                .produit(Produit.builder().id_produit(produitAvecDetail.getId_produit().getId_produit()).build())
+                .detailProduit(DetailProduit.builder().id_detail_produit(produitAvecDetail.getId_detail_produit().getId_detail_produit()).build())
+                .build();
     }
 }

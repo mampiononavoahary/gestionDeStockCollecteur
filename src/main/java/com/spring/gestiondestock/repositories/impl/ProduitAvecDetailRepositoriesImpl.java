@@ -23,9 +23,9 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         connection = connect.CreateConnection();
     }
     private ProduitAvecDetail extract(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
-        Produit produit = new Produit();
-        DetailProduit detailProduit = new DetailProduit();
+        int id = resultSet.getInt("id_produit_avec_detail");
+        Produit produit = Produit.builder().id_produit(resultSet.getInt("id_produit")).build();
+        DetailProduit detailProduit = DetailProduit.builder().id_detail_produit(resultSet.getInt("id_detail_produit")).build();
         List<Transaction> transactionList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
@@ -71,7 +71,7 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
 
     @Override
     public ProduitAvecDetail updateProduitAvecDetail(ProduitAvecDetail toUpdate, int id) throws SQLException, ClassNotFoundException {
-        String sql = "update produit_avec_detail set id_produit = ?, id_detail_produit = ? where id = ?";
+        String sql = "update produit_avec_detail set id_produit = ?, id_detail_produit = ? where id_produit_avec_detail = ?";
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, toUpdate.getId_produit().getId_produit());
@@ -88,7 +88,7 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
 
     @Override
     public ProduitAvecDetail findProduitAvecDetailById(int id) throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM produit_avec_detail WHERE id = ?";
+        String sql = "SELECT * FROM produit_avec_detail WHERE id_produit_avec_detail = ?";
         getConnection();
         ProduitAvecDetail produitAvecDetail = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
@@ -103,7 +103,7 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
 
     @Override
     public ProduitAvecDetail deleteProduitAvecDetailById(int id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM produit_avec_detail WHERE id = ?";
+        String sql = "DELETE FROM produit_avec_detail WHERE id_produit_avec_detail = ?";
         ProduitAvecDetail produitAvecDetail = null;
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
