@@ -1,19 +1,19 @@
-package com.spring.gestiondestock.model;
+package com.spring.gestiondestock.dtos.responses;
 
+import com.spring.gestiondestock.model.DetailTransaction;
+import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.enums.Status;
 import com.spring.gestiondestock.model.enums.Unite;
-import lombok.*;
-import lombok.experimental.Accessors;
-
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
-@Accessors(chain = true)
-public class Transaction implements Serializable {
+public class TransactionResponse {
     private int id_transaction;
     private ProduitAvecDetail produitAvecDetail;
     private DetailTransaction detailTransaction;

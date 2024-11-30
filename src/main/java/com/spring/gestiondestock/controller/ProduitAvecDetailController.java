@@ -1,6 +1,7 @@
 package com.spring.gestiondestock.controller;
 
 import com.spring.gestiondestock.model.ProduitAvecDetail;
+import com.spring.gestiondestock.model.extractModel.ExtractProduitWitDetail;
 import com.spring.gestiondestock.repositories.impl.ProduitAvecDetailRepositoriesImpl;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +35,9 @@ public class ProduitAvecDetailController {
     @PutMapping("/put/{id_produit_avec_detail}")
     public ProduitAvecDetail updateProduitAvecDetail(@RequestBody ProduitAvecDetail produitAvecDetail, @PathVariable String id_produit_avec_detail) throws SQLException, ClassNotFoundException {
         return produitAvecDetailRepositories.updateProduitAvecDetail(produitAvecDetail, Integer.parseInt(id_produit_avec_detail));
+    }
+    @GetMapping("/idandname")
+    public List<ExtractProduitWitDetail> getIdAndName() throws SQLException, ClassNotFoundException {
+        return produitAvecDetailRepositories.getIdAndNameDetail();
     }
 }

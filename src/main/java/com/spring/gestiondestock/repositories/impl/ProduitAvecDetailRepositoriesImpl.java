@@ -2,6 +2,7 @@ package com.spring.gestiondestock.repositories.impl;
 
 import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.*;
+import com.spring.gestiondestock.model.extractModel.ExtractProduitWitDetail;
 import com.spring.gestiondestock.repositories.InterfaceProduitAvecDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,5 +130,25 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
             }
         }
         return toSave;
+    }
+    private ExtractProduitWitDetail extractProduitWitDetail(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id_produit_avec_detail");
+        String nom_detail = resultSet.getString("nom_detail");
+
+        return new ExtractProduitWitDetail(id, nom_detail);
+    }
+    public List<ExtractProduitWitDetail> getIdAndNameDetail() throws SQLException, ClassNotFoundException {
+        String sql = "select pad.id_produit_avec_detail, dp.nom_detail from produit_avec_detail pad INNER JOIN produit p " +
+                "ON pad.id_produit = p.id_produit INNER JOIN detail_produit dp " +
+                "ON pad.id_detail_produit = dp.id_detail_produit;";
+        List<ExtractProduitWitDetail> listProduitWitDetail = new ArrayList<>();
+        getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                listProduitWitDetail.add(extractProduitWitDetail(resultSet));
+            }
+        }
+        return listProduitWitDetail;
     }
 }
