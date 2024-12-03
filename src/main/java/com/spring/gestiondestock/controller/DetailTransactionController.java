@@ -3,7 +3,6 @@ package com.spring.gestiondestock.controller;
 import com.spring.gestiondestock.dtos.requests.DetailTransactionRequest;
 import com.spring.gestiondestock.dtos.responses.DetailTransactionResponse;
 import com.spring.gestiondestock.model.DetailTransaction;
-import com.spring.gestiondestock.repositories.impl.DetailTransactionRepositoriesImpl;
 import com.spring.gestiondestock.service.impl.DetailTransactionServiceImpl;
 import org.springframework.web.bind.annotation.*;
 

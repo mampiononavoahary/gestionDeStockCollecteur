@@ -9,12 +9,19 @@ import java.util.List;
 
 @Service
 public class ExtractTransactionService {
-    private static ExtractTransactionRepository extractTransactionRepository;
+
+    private final ExtractTransactionRepository extractTransactionRepository;
+
     public ExtractTransactionService(ExtractTransactionRepository extractTransactionRepository) {
         this.extractTransactionRepository = extractTransactionRepository;
     }
 
-    public List<ExtractTransaction> findAll() throws SQLException, ClassNotFoundException {
-        return extractTransactionRepository.findAll();
+    public List<ExtractTransaction> findFilteredTransactions(String query, int currentPage)
+            throws SQLException, ClassNotFoundException {
+        return extractTransactionRepository.findFilteredTransactions(query, currentPage);
+    }
+    public int countTransactions(String query) throws SQLException, ClassNotFoundException {
+        return extractTransactionRepository.countFilteredTransactions(query);
     }
 }
+

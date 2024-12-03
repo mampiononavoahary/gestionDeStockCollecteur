@@ -3,7 +3,6 @@ package com.spring.gestiondestock.controller;
 import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.extractModel.ExtractProduitWitDetail;
 import com.spring.gestiondestock.repositories.impl.ProduitAvecDetailRepositoriesImpl;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
