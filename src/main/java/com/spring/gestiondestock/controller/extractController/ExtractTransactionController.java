@@ -27,6 +27,22 @@ public class ExtractTransactionController {
     ) throws SQLException, ClassNotFoundException {
         return extractTransactionService.findFilteredTransactions(query, currentPage);
     }
+    @GetMapping("/ventes")
+    public List<ExtractTransaction> getTransactionsExtractVente(
+            @RequestParam(required = false, defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "1") int currentPage
+    ) throws SQLException, ClassNotFoundException {
+        return extractTransactionService.findFilteredTransactionsVente(query, currentPage);
+    }
+    @GetMapping("/achats")
+    public List<ExtractTransaction> getTransactionsExtractAchat(
+            @RequestParam(required = false, defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "1") int currentPage
+    ) throws SQLException, ClassNotFoundException {
+        return extractTransactionService.findFilteredTransactionsAchat(query, currentPage);
+    }
+ 
+ 
     @GetMapping("/count")
     public int getTransactionsExtractCount(@RequestParam(required = false, defaultValue = "") String query) throws SQLException, ClassNotFoundException {
         return extractTransactionService.countTransactions(query);

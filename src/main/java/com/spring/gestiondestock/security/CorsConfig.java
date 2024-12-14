@@ -1,5 +1,4 @@
 package com.spring.gestiondestock.security;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,7 @@ public class CorsConfig {
         config.setAllowCredentials(true);  // Autoriser les cookies / credentials
 
         // Configurer les origines autorisées pour les cookies et les en-têtes
-        config.addAllowedOrigin("https://gestionofstock.vercel.app");  // Origine spécifique
+        config.addAllowedOrigin("http://localhost:3000");  // Origine spécifique
         config.addAllowedHeader("Authorization");
         config.addAllowedHeader("Content-Type");
 

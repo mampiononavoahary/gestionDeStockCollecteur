@@ -35,7 +35,7 @@ public class PicSumBuyRepository {
                 "        JOIN\n" +
                 "    detail_transaction dt ON t.id_detail_transaction = dt.id_detail_transaction\n" +
                 "WHERE\n" +
-                "    dt.type_de_transaction= 'ENTRE'-- Facultatif : Filtrer uniquement les transactions payées\n" +
+                "    dt.type_de_transaction= 'SORTIE'-- Facultatif : Filtrer uniquement les transactions payées\n" +
                 "GROUP BY\n" +
                 "    month\n" +
                 "ORDER BY\n" +

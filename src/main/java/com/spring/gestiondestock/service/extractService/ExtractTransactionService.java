@@ -20,6 +20,15 @@ public class ExtractTransactionService {
             throws SQLException, ClassNotFoundException {
         return extractTransactionRepository.findFilteredTransactions(query, currentPage);
     }
+    public List<ExtractTransaction> findFilteredTransactionsVente(String query, int currentPage)
+            throws SQLException, ClassNotFoundException {
+        return extractTransactionRepository.findFilteredTransactionsVente(query, currentPage);
+    }
+     public List<ExtractTransaction> findFilteredTransactionsAchat(String query, int currentPage)
+            throws SQLException, ClassNotFoundException {
+        return extractTransactionRepository.findFilteredTransactionsAchat(query, currentPage);
+    }
+ 
     public int countTransactions(String query) throws SQLException, ClassNotFoundException {
         return extractTransactionRepository.countFilteredTransactions(query);
     }

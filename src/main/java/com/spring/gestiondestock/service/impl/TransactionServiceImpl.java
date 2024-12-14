@@ -52,5 +52,8 @@ public class TransactionServiceImpl {
         }
         return transactionResponses;
     }
+public Transaction deleteTransaction(int id_transaction) throws SQLException, ClassNotFoundException {
+    return transactionRepositories.deleteTransaction(id_transaction);
+}
 
 }

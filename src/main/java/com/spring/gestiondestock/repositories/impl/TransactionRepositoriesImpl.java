@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Repository
 public class TransactionRepositoriesImpl {
@@ -67,5 +68,18 @@ public class TransactionRepositoriesImpl {
             }
         }
         return transaction;
+    }
+    public Transaction deleteTransaction(int id_transaction)  throws SQLException, ClassNotFoundException {
+      String sql = "DELETE FROM transactions WHERE id_transaction=?;";
+      getConnection();
+      Transaction transaction = null;
+      try(PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
+        prepareStatement.setInt(1,id_transaction);
+        int rows = prepareStatement.executeUpdate();
+        if (rows == 1) {
+          System.out.println("Transaction deleted");
+        } 
+      }      
+      return transaction;
     }
 }

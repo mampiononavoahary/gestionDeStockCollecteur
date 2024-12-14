@@ -19,7 +19,7 @@ public class TotalTransactionRepository {
 
     public int getTotalTransactionEnter() throws SQLException, ClassNotFoundException {
         String sql = "select COUNT(*) as totalTransaction from transactions INNER JOIN " +
-                "detail_transaction ON transactions.id_detail_transaction = detail_transaction.id_detail_transaction WHERE detail_transaction.type_de_transaction='ENTRE';\n";
+                "detail_transaction ON transactions.id_detail_transaction = detail_transaction.id_detail_transaction WHERE detail_transaction.type_de_transaction='SORTIE';\n";
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -31,7 +31,7 @@ public class TotalTransactionRepository {
     }
     public int getTotalTransactionOut() throws SQLException, ClassNotFoundException {
         String sql = "select COUNT(*) as totalTransaction from transactions INNER JOIN detail_transaction ON transactions.id_detail_transaction = detail_transaction.id_detail_transaction " +
-                "WHERE detail_transaction.type_de_transaction='SORTIE';";
+                "WHERE detail_transaction.type_de_transaction='ENTRE';";
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
