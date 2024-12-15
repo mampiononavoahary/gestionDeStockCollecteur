@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients") // Centraliser le chemin des endpoints
-@CrossOrigin(origins = "http://localhost:63342")
 public class ClientsController {
 
     private final CLientsServiceImpl clientsService;
