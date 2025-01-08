@@ -1,0 +1,21 @@
+package com.spring.gestiondestock.model.extractModel;
+
+import com.spring.gestiondestock.model.enums.Unite;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class StockWithDetail implements Serializable {
+    private String lieu_stock;
+    private Double quantite_stock;
+    private Unite unite;
+    private String nom_detail;
+    private String symbole;
+}

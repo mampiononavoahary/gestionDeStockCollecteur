@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TransactionServiceImpl {
@@ -30,7 +31,7 @@ public class TransactionServiceImpl {
     public List<TransactionResponse> saveAllTransactions(List<TransactionRequest> transactionRequests) throws SQLException, ClassNotFoundException {
         var detail = detailTransactionRepositories.findById(transactionRequests.get(0).getId_detail_transaction());
 
-        if (detail.getType_de_transaction() == TypeDeTransaction.ENTRE) {
+        if (detail.getType_de_transaction() == TypeDeTransaction.ENTRE && Objects.equals(transactionRequests.get(0).getStatus(), "PAYE")) {
             Stock stock = stockRepositories.findById(transactionRequests.get(0).getId_produit_avec_detail());
             stock.setQuantite_stock(stock.getQuantite_stock() + transactionRequests.get(0).getQuantite());
             stockRepositories.updateStock(stock, stock.getId_stock());
