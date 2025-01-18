@@ -13,10 +13,10 @@ public class TotalTransactionService {
         this.totalTransactionRepository = totalTransactionRepository;
     }
 
-    public int totalTransactionEnter() throws SQLException, ClassNotFoundException {
-        return totalTransactionRepository.getTotalTransactionByDateRange();
+    public int totalTransactionEnter(String location, Date date) throws SQLException, ClassNotFoundException {
+        return totalTransactionRepository.getTotalTransactionByDateRange(location,date);
     }
-    public int totalTransactionExit() throws SQLException, ClassNotFoundException {
-        return totalTransactionRepository.getTotalTransactionOut();
+    public int totalTransactionExit(String location, Date date) throws SQLException, ClassNotFoundException {
+        return totalTransactionRepository.getTotalTransactionOut(location,date);
     }
 }

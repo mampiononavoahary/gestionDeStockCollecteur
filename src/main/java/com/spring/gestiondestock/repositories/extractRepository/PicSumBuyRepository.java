@@ -25,7 +25,7 @@ public class PicSumBuyRepository {
         List<PicSumBuy> picSumBuyList = new ArrayList<>();
         String query = "SELECT\n" +
                 "    TO_CHAR(dt.date_de_transaction, 'Month') AS month,\n" +
-                "    SUM(dp.prix_de_vente * t.quantite) AS sum\n" +
+                "    SUM(t.prix_unitaire * t.quantite) AS sum\n" +
                 "FROM\n" +
                 "    transactions t\n" +
                 "        JOIN\n" +

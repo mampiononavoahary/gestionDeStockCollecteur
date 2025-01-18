@@ -19,5 +19,6 @@ public class TransactionResponse {
     private DetailTransaction detailTransaction;
     private Double quantite;
     private Unite unite;
+    private Double prix_unitaire;
     private Status status;
 }

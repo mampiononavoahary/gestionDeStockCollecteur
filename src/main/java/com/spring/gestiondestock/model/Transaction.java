@@ -1,5 +1,6 @@
 package com.spring.gestiondestock.model;
 
+import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.model.enums.Status;
 import com.spring.gestiondestock.model.enums.Unite;
 import lombok.*;
@@ -19,5 +20,7 @@ public class Transaction implements Serializable {
     private DetailTransaction detailTransaction;
     private Double quantite;
     private Unite unite;
+    private Double prix_unitaire;
     private Status status;
+    private LieuDeTransaction lieu_stock;
 }

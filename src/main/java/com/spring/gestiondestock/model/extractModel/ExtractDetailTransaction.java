@@ -5,18 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class ExtractLatestTransaction {
-    private int id_transaction;
+public class ExtractDetailTransaction {
+    private int id_detail_transaction;
     private String nom;
     private String prenom;
-    private Timestamp date_de_transaction;
-    private String nom_detail;
-    private Double quantite;
-    private String unite;
 }

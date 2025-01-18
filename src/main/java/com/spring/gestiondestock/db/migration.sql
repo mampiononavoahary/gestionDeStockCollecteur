@@ -6,7 +6,7 @@ create type role_user as enum ('USER','ADMIN');
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 create type unite as enum('KG','T','AR');
 create type type_de_transaction as enum ('ENTRE', 'SORTIE');
-create type lieu_transaction as enum('ITAOSY','ALATSINAINIKELY','AMBATONDRAZAKA');
+create type lieu_de_transaction as enum('ITAOSY','ALATSINAINIKELY','AMBATONDRAZAKA','ANOSIZATO','AMPASIKA');
 create type status as enum('PAYE','EN_ATTENTE');
 create table if not exists users(
                       id_user serial primary key ,
@@ -26,7 +26,8 @@ create table if not exists detail_produit(
                     description varchar(200),
                     prix_d_achat double precision check ( prix_d_achat >=0),
                     prix_de_vente double precision check ( prix_de_vente >=0 ),
-                    unite unite
+                    unite unite,
+                    image_url text
 );
 create table if not exists clients(
     id_clients serial primary key ,
@@ -49,24 +50,59 @@ create table if not exists produit(
 );
 create table if not exists produit_avec_detail(
     id_produit_avec_detail serial primary key ,
-    id_produit serial references produit(id_produit),
-    id_detail_produit serial references detail_produit(id_detail_produit)
+    id_produit integer references produit(id_produit),
+    id_detail_produit integer references detail_produit(id_detail_produit)
 );
 create table if not exists transactions(
     id_transaction serial primary key ,
-    id_produit_avec_detail serial references produit_avec_detail(id_produit_avec_detail),
-    id_detail_transaction serial references  detail_transaction(id_detail_transaction),
+    id_produit_avec_detail integer references produit_avec_detail(id_produit_avec_detail),
+    id_detail_transaction integer references  detail_transaction(id_detail_transaction),
     quantite double precision check ( quantite>0 ),
     unite unite,
-    status status
+    prix_unitaire double precision check ( prix_unitaire>0 ),
+    status status,
+    lieu_stock lieu_de_transaction
 );
 create table if not exists stock(
     id_stock serial primary key ,
     lieu_stock lieu_transaction,
-    id_produit_avec_detail serial references produit_avec_detail(id_produit_avec_detail),
+    id_produit_avec_detail integer references produit_avec_detail(id_produit_avec_detail),
     quantite_stock double precision,
     unite unite
 );
 
-
+SELECT 
+    t.id_transaction,
+    dt.id_detail_transaction,
+    t.quantite,
+    t.unite,
+    t.status,
+    t.lieu_stock,
+    dp.nom_detail,
+    dp.symbole,
+    dp.description,
+    dp.prix_d_achat,
+    dp.prix_de_vente,
+    c.nom AS client_nom,
+    c.prenom AS client_prenom,
+    c.adresse AS client_adresse,
+    c.telephone AS client_telephone,
+    dt.type_de_transaction,
+    dt.date_de_transaction,
+    dt.lieu_de_transaction,
+    p.nom_produit
+FROM 
+    transactions t
+JOIN 
+    produit_avec_detail pad ON t.id_produit_avec_detail = pad.id_produit_avec_detail
+JOIN 
+    detail_produit dp ON pad.id_detail_produit = dp.id_detail_produit
+JOIN 
+    produit p ON pad.id_produit = p.id_produit
+JOIN 
+    detail_transaction dt ON t.id_detail_transaction = dt.id_detail_transaction
+JOIN 
+    clients c ON dt.id_client = c.id_clients
+WHERE 
+    dt.type_de_transaction = 'SORTIE' ORDER BY dt.date_de_transaction DESC; 
 

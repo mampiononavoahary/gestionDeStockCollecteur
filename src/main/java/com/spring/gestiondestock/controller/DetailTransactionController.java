@@ -3,6 +3,7 @@ package com.spring.gestiondestock.controller;
 import com.spring.gestiondestock.dtos.requests.DetailTransactionRequest;
 import com.spring.gestiondestock.dtos.responses.DetailTransactionResponse;
 import com.spring.gestiondestock.model.DetailTransaction;
+import com.spring.gestiondestock.model.extractModel.ExtractDetailTransaction;
 import com.spring.gestiondestock.service.impl.DetailTransactionServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class DetailTransactionController {
         return detailTransactionService.addDetailTransaction(detailTransaction);
     }
     @GetMapping("/lastdetail")
-    public DetailTransaction getLastDetailTransactionId() throws SQLException, ClassNotFoundException {
+    public List<ExtractDetailTransaction> getLastDetailTransactionId() throws SQLException, ClassNotFoundException {
         return detailTransactionService.getLasteDetailTransactionId();
     }
 }

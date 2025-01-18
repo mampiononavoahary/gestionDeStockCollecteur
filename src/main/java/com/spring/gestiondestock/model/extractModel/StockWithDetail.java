@@ -13,9 +13,11 @@ import java.io.Serializable;
 @Data
 @Builder
 public class StockWithDetail implements Serializable {
+    private int id_stock;
     private String lieu_stock;
     private Double quantite_stock;
     private Unite unite;
     private String nom_detail;
     private String symbole;
+    private String image_url;
 }

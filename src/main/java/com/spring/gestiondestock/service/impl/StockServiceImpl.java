@@ -3,7 +3,9 @@ package com.spring.gestiondestock.service.impl;
 import com.spring.gestiondestock.dtos.requests.StockRequest;
 import com.spring.gestiondestock.dtos.responses.StockResponse;
 import com.spring.gestiondestock.mappers.StockMapper;
+import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.Stock;
+import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.repositories.impl.StockRepositoriesImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,14 @@ public class StockServiceImpl {
         }
         assert getById != null;
         return stockMapper.toResponse(getById);
+    }
+    public StockResponse findByLieuAndIdProduit(String lieu, int id_produit_avec_detail) throws SQLException, ClassNotFoundException {
+        var getByLieuAndIdProduit = stockRepositories.findByLieuAndProduit(lieu,id_produit_avec_detail);
+        if (getByLieuAndIdProduit == null){
+            log.error("stock with lieu_de_transaction: {} and id_produit_avec_detail: {} not found", lieu, id_produit_avec_detail);
+        }
+        assert getByLieuAndIdProduit != null;
+        return stockMapper.toResponse(getByLieuAndIdProduit);
     }
     public StockResponse save(StockRequest stockRequest) throws SQLException, ClassNotFoundException {
         var toEntity = stockMapper.toEntity(stockRequest);

@@ -5,6 +5,7 @@ import com.spring.gestiondestock.dtos.responses.DetailProduitResponse;
 import com.spring.gestiondestock.dtos.responses.DetailTransactionResponse;
 import com.spring.gestiondestock.mappers.DetailTransactionMapper;
 import com.spring.gestiondestock.model.DetailTransaction;
+import com.spring.gestiondestock.model.extractModel.ExtractDetailTransaction;
 import com.spring.gestiondestock.repositories.impl.DetailTransactionRepositoriesImpl;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class DetailTransactionServiceImpl {
         }
         return detailTransactionResponseList;
     }
-    public DetailTransaction getLasteDetailTransactionId() throws SQLException, ClassNotFoundException {
+    public List<ExtractDetailTransaction> getLasteDetailTransactionId() throws SQLException, ClassNotFoundException {
         return detailTransactionRepositories.lastDetailTransaction();
     }
 }

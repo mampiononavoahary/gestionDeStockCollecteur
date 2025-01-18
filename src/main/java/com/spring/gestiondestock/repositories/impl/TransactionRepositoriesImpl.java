@@ -4,6 +4,7 @@ import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.DetailTransaction;
 import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.Transaction;
+import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.model.enums.Status;
 import com.spring.gestiondestock.model.enums.Unite;
 import org.springframework.stereotype.Repository;
@@ -29,12 +30,14 @@ public class TransactionRepositoriesImpl {
         DetailTransaction id_detail_transaction = DetailTransaction.builder().id_detail_transaction(resultSet.getInt("id_detail_transaction")).build();
         Double quantite = resultSet.getDouble("quantite");
         Unite unite = Unite.valueOf(resultSet.getString("unite"));
+        Double prix_unitaire = resultSet.getDouble("prix_unitaire");
         Status status = Status.valueOf(resultSet.getString("status"));
+        LieuDeTransaction lieu_stock = LieuDeTransaction.valueOf(resultSet.getString("lieu_stock"));
 
-        return new Transaction(id_transaction,id_produit_avec_detail,id_detail_transaction,quantite,unite,status);
+        return new Transaction(id_transaction,id_produit_avec_detail,id_detail_transaction,quantite,unite,prix_unitaire,status,lieu_stock);
     }
     public List<Transaction> saveAllTransaction(List<Transaction> transactions) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO transactions (id_produit_avec_detail,id_detail_transaction,quantite,unite,status) VALUES (?,?,?,CAST(? AS unite),CAST(? AS status)";
+        String sql = "INSERT INTO transactions (id_produit_avec_detail,id_detail_transaction,quantite,unite,prix_unitaire,status,lieu_stock) VALUES (?,?,?,CAST(? AS unite),?,CAST(? AS status),CAST(? AS lieu_de_transaction));";
         List<Transaction> transactionList = new ArrayList<>();
         getConnection();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -43,7 +46,9 @@ public class TransactionRepositoriesImpl {
                 ps.setInt(2,transaction.getDetailTransaction().getId_detail_transaction());
                 ps.setDouble(3,transaction.getQuantite());
                 ps.setString(4,transaction.getUnite().name());
-                ps.setString(5,transaction.getStatus().name());
+                ps.setDouble(5,transaction.getPrix_unitaire());
+                ps.setString(6,transaction.getStatus().name());
+                ps.setString(7,transaction.getLieu_stock().name());
 
                 int rowsAffected = ps.executeUpdate();
                 if (rowsAffected > 0) {
@@ -53,15 +58,18 @@ public class TransactionRepositoriesImpl {
         }
         return transactionList;
     }
+
     public  Transaction saveTransaction(Transaction transaction) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO transactions(id_produit_avec_detail,id_detail_transaction,quantite,unite,status) VALUES (?,?,?,CAST(? AS unite),CAST(? AS status));";
+        String sql = "INSERT INTO transactions(id_produit_avec_detail,id_detail_transaction,quantite,unite,prix_unitaire,status,lieu_stock) VALUES (?,?,?,CAST(? AS unite),?,CAST(? AS status),CAST(? AS lieu_de_transaction));";
         getConnection();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1,transaction.getProduitAvecDetail().getId_produit_avec_detail());
             ps.setInt(2,transaction.getDetailTransaction().getId_detail_transaction());
             ps.setDouble(3,transaction.getQuantite());
             ps.setString(4,transaction.getUnite().name());
-            ps.setString(5,transaction.getStatus().name());
+            ps.setDouble(5,transaction.getPrix_unitaire());
+            ps.setString(6,transaction.getStatus().name());
+            ps.setString(7,transaction.getLieu_stock().name());
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Save transaction successful");

@@ -24,7 +24,7 @@ public class ExtractTransactionRepository {
         String nomClient = resultSet.getString("nom_client");
         String nomProduit = resultSet.getString("nom_produit");
         Timestamp dateTransaction = resultSet.getTimestamp("date_transaction");
-        String lieuTransaction = resultSet.getString("lieu_transaction");
+        String lieuTransaction = resultSet.getString("lieu_de_transaction");
         Double quantite = resultSet.getDouble("quantite");
         String unite = resultSet.getString("unite");
         String status = resultSet.getString("status");
@@ -40,7 +40,7 @@ public class ExtractTransactionRepository {
                 c.nom AS nom_client,
                 p.nom_produit AS nom_produit,
                 dt.date_de_transaction AS date_transaction,
-                dt.lieu_de_transaction::text AS lieu_transaction,
+                dt.lieu_de_transaction::text,
                 t.quantite AS quantite,
                 t.unite::text AS unite,
                 t.status::text AS status
@@ -93,7 +93,7 @@ public class ExtractTransactionRepository {
                 c.nom AS nom_client,
                 p.nom_produit AS nom_produit,
                 dt.date_de_transaction AS date_transaction,
-                dt.lieu_de_transaction::text AS lieu_transaction,
+                dt.lieu_de_transaction::text,
                 t.quantite AS quantite,
                 t.unite::text AS unite,
                 t.status::text AS status
@@ -148,7 +148,7 @@ public class ExtractTransactionRepository {
                 c.nom AS nom_client,
                 p.nom_produit AS nom_produit,
                 dt.date_de_transaction AS date_transaction,
-                dt.lieu_de_transaction::text AS lieu_transaction,
+                dt.lieu_de_transaction::text,
                 t.quantite AS quantite,
                 t.unite::text AS unite,
                 t.status::text AS status

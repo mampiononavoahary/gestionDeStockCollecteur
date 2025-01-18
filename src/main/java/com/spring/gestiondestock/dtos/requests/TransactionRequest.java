@@ -15,5 +15,7 @@ public class TransactionRequest {
     private int id_detail_transaction;
     private double quantite;
     private String unite;
+    private Double prix_unitaire;
     private String status;
+    private String lieu_stock;
 }

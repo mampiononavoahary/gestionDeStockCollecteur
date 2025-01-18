@@ -1,7 +1,7 @@
 package com.spring.gestiondestock.repositories.impl;
 
+import com.spring.gestiondestock.model.extractModel.ExtractDetailTransaction;
 import com.spring.gestiondestock.db.Connect;
-import com.spring.gestiondestock.dtos.requests.DetailTransactionRequest;
 import com.spring.gestiondestock.model.Clients;
 import com.spring.gestiondestock.model.DetailTransaction;
 import com.spring.gestiondestock.model.Transaction;
@@ -91,16 +91,24 @@ public class DetailTransactionRepositoriesImpl {
         }
         return detailTransaction;
     }
-    public DetailTransaction lastDetailTransaction() throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM detail_transaction ORDER BY id_detail_transaction DESC LIMIT 1";
+    private ExtractDetailTransaction extractDetailTransaction2(ResultSet resultSet2) throws SQLException {
+        ExtractDetailTransaction extractDetailTransaction = new ExtractDetailTransaction();
+        extractDetailTransaction.setId_detail_transaction(resultSet2.getInt("id_detail_transaction"));
+        extractDetailTransaction.setNom(resultSet2.getString("nom"));
+        extractDetailTransaction.setPrenom(resultSet2.getString("prenom"));
+
+        return extractDetailTransaction;
+    }
+    public List<ExtractDetailTransaction> lastDetailTransaction() throws SQLException, ClassNotFoundException {
+        String sql = "SELECT dt.*,c.nom,c.prenom FROM detail_transaction dt INNER JOIN clients c ON dt.id_client = c.id_clients ORDER BY id_detail_transaction DESC LIMIT 4";
         getConnection();
-        DetailTransaction detailTransaction = null;
+        List<ExtractDetailTransaction> detail = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                detailTransaction = extractDetailTransaction(resultSet);
+                detail.add(extractDetailTransaction2(resultSet));
             }
         }
-      return detailTransaction;
+      return detail;
     }
 }

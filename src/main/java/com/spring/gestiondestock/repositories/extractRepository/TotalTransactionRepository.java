@@ -14,28 +14,47 @@ public class TotalTransactionRepository {
     }
 
  
-public int getTotalTransactionByDateRange() throws SQLException, ClassNotFoundException {
+
+public int getTotalTransactionByDateRange(String location, Date date) throws SQLException, ClassNotFoundException {
     String sql = "SELECT COUNT(*) AS totalTransaction " +
                  "FROM transactions " +
                  "INNER JOIN detail_transaction ON transactions.id_detail_transaction = detail_transaction.id_detail_transaction " +
-                 "WHERE detail_transaction.type_de_transaction = 'SORTIE' ";
-    
+                 "WHERE detail_transaction.type_de_transaction = 'SORTIE' " +
+                 "AND COALESCE(detail_transaction.lieu_de_transaction::TEXT, '') ILIKE ? " +
+                 (date != null ? "AND DATE(detail_transaction.date_de_transaction) = ?" : "");
+
     getConnection();
 
     try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        preparedStatement.setString(1, "%" + location + "%");
+        
+        if (date != null) {
+            preparedStatement.setDate(2, date);
+        }
+
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 return resultSet.getInt("totalTransaction");
             }
         }
     }
     return 0;
 }
-    public int getTotalTransactionOut() throws SQLException, ClassNotFoundException {
-        String sql = "select COUNT(*) as totalTransaction from transactions INNER JOIN detail_transaction ON transactions.id_detail_transaction = detail_transaction.id_detail_transaction " +
-                "WHERE detail_transaction.type_de_transaction='ENTRE';";
+
+    public int getTotalTransactionOut(String location, Date date) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT COUNT(*) AS totalTransaction " +
+                 "FROM transactions " +
+                 "INNER JOIN detail_transaction ON transactions.id_detail_transaction = detail_transaction.id_detail_transaction " +
+                 "WHERE detail_transaction.type_de_transaction = 'ENTRE' " +
+                 "AND COALESCE(detail_transaction.lieu_de_transaction::TEXT, '') ILIKE ? " +
+                 (date != null ? "AND DATE(detail_transaction.date_de_transaction) = ?" : "");
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, "%" + location + "%");
+                   if (date != null) {
+            preparedStatement.setDate(2, date);
+        }
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 return resultSet.getInt("totalTransaction");

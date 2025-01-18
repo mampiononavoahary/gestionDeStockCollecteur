@@ -22,17 +22,19 @@ public class ExtractStockWithDetailRepositories {
     }
     private StockWithDetail extractStockWithDetail(ResultSet resultSet) throws SQLException {
         StockWithDetail stockWithDetail = new StockWithDetail();
+        stockWithDetail.setId_stock(resultSet.getInt("id_stock"));
         stockWithDetail.setLieu_stock(resultSet.getString("lieu_stock"));
         stockWithDetail.setQuantite_stock(resultSet.getDouble("quantite_stock"));
         stockWithDetail.setUnite(Unite.valueOf(resultSet.getString("unite")));
         stockWithDetail.setNom_detail(resultSet.getString("nom_detail"));
         stockWithDetail.setSymbole(resultSet.getString("symbole"));
+        stockWithDetail.setImage_url(resultSet.getString("image_url"));
         return stockWithDetail;
     }
 
     public List<StockWithDetail> findAll() throws SQLException, ClassNotFoundException {
         List<StockWithDetail> stockWithDetails = new ArrayList<>();
-        String sql = "select s.lieu_stock,s.quantite_stock,s.unite,dp.nom_detail,dp.symbole from stock s " +
+        String sql = "select s.id_stock,s.lieu_stock,s.quantite_stock,s.unite,dp.nom_detail,dp.symbole,dp.image_url from stock s " +
                 "inner join produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail " +
                 "inner join detail_produit dp on pdt.id_detail_produit = dp.id_detail_produit;";
         getConnection();
@@ -43,5 +45,21 @@ public class ExtractStockWithDetailRepositories {
             }
         }
         return stockWithDetails;
+    }
+    public StockWithDetail findByLieuAndProduit(String lieu, String produit) throws SQLException, ClassNotFoundException {
+        String sql = "select s.id_stock,s.lieu_stock,s.quantite_stock,s.unite,dp.nom_detail,dp.symbole,dp.image_url from stock s " +
+                "inner join produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail " +
+                "inner join detail_produit dp on pdt.id_detail_produit = dp.id_detail_produit where s.lieu_stock = ?::lieu_de_transaction AND dp.nom_detail = ?;";
+        getConnection();
+        StockWithDetail stockWithDetail = null;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, lieu);
+            ps.setString(2, produit);
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                return extractStockWithDetail(resultSet);
+            }
+        }
+        return stockWithDetail;
     }
 }

@@ -17,4 +17,7 @@ public class ExtractStockService {
     public List<StockWithDetail> findAll() throws SQLException, ClassNotFoundException {
         return extractStockWithDetailRepositories.findAll();
     }
+    public StockWithDetail findByLieuAndProduit(String lieu, String nom_produit) throws SQLException, ClassNotFoundException {
+        return extractStockWithDetailRepositories.findByLieuAndProduit(lieu, nom_produit);
+    }
 }

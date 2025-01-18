@@ -5,6 +5,7 @@ import com.spring.gestiondestock.dtos.responses.TransactionResponse;
 import com.spring.gestiondestock.model.DetailTransaction;
 import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.Transaction;
+import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.model.enums.Status;
 import com.spring.gestiondestock.model.enums.Unite;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,9 @@ public class TransactionMapper {
                 .produitAvecDetail(ProduitAvecDetail.builder().id_produit_avec_detail(transactionRequest.getId_produit_avec_detail()).build())
                 .quantite(transactionRequest.getQuantite())
                 .unite(Unite.valueOf(transactionRequest.getUnite()))
+                .prix_unitaire(transactionRequest.getPrix_unitaire())
                 .status(Status.valueOf(transactionRequest.getStatus()))
+                .lieu_stock(LieuDeTransaction.valueOf(transactionRequest.getLieu_stock()))
                 .build();
     }
     public TransactionResponse toResponse(Transaction transaction) {
@@ -29,6 +32,7 @@ public class TransactionMapper {
                 .produitAvecDetail(transaction.getProduitAvecDetail())
                 .quantite(transaction.getQuantite())
                 .unite(transaction.getUnite())
+                .prix_unitaire(transaction.getPrix_unitaire())
                 .status(transaction.getStatus())
                 .build();
     }
