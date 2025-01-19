@@ -16,14 +16,14 @@ public class ExtractSumTransactionRepository {
 
     public Double SumTransactionEnter(String lieu, Date date) throws SQLException, ClassNotFoundException {
         String sql = "SELECT " +
-                     "    SUM(t.quantite * t.prix_unitaire) AS sum " +
+                     "    SUM(t.prix_unitaire * CASE WHEN t.unite='T' THEN t.quantite * 1000 ELSE t.quantite END) AS sum " +
                      "FROM " +
                      "    transactions t " +
                      "    JOIN detail_transaction dt ON t.id_detail_transaction = dt.id_detail_transaction " +
                      "    JOIN produit_avec_detail pad ON t.id_produit_avec_detail = pad.id_produit_avec_detail " +
                      "    JOIN detail_produit dp ON pad.id_detail_produit = dp.id_detail_produit " +
                      "WHERE " +
-                     "    dt.type_de_transaction = 'ENTRE' " +
+                     "    dt.type_de_transaction = 'SORTIE' " +
                      "    AND t.status = 'PAYE' " +
                      "    AND COALESCE(dt.lieu_de_transaction::TEXT, '') ILIKE ? " +
                      (date != null ? " AND DATE(dt.date_de_transaction) = ?" : "");
@@ -50,14 +50,14 @@ public class ExtractSumTransactionRepository {
 
     public Double SumTransactionExit(String lieu, Date date) throws SQLException, ClassNotFoundException {
         String sql = "SELECT " +
-                     "    SUM(t.quantite * t.prix_unitaire) AS sum " +
+                     "    SUM(t.prix_unitaire * CASE WHEN t.unite='T' THEN t.quantite * 1000 ELSE t.quantite END) AS sum " +
                      "FROM " +
                      "    transactions t " +
                      "    JOIN detail_transaction dt ON t.id_detail_transaction = dt.id_detail_transaction " +
                      "    JOIN produit_avec_detail pad ON t.id_produit_avec_detail = pad.id_produit_avec_detail " +
                      "    JOIN detail_produit dp ON pad.id_detail_produit = dp.id_detail_produit " +
                      "WHERE " +
-                     "    dt.type_de_transaction = 'SORTIE' " +
+                     "    dt.type_de_transaction = 'ENTRE' " +
                      "    AND t.status = 'PAYE' " +
                      "    AND COALESCE(dt.lieu_de_transaction::TEXT, '') ILIKE ? " +
                      (date != null ? " AND DATE(dt.date_de_transaction) = ?" : "");

@@ -48,8 +48,14 @@ public class TransactionServiceImpl {
         stock = new Stock();
         stock.setLieu_de_transaction(LieuDeTransaction.valueOf(transactionRequests.get(0).getLieu_stock()));
         stock.setProduitAvecDetail(produitAvecDetail);
-        stock.setQuantite_stock(transactionRequests.get(0).getQuantite());
-        stock.setUnite(Unite.valueOf(transactionRequests.get(0).getUnite()));
+        if ("T".equals(transactionRequests.get(0).getUnite())) {
+            double quantiteChange = transactionRequests.get(0).getQuantite() * 1000;
+            stock.setQuantite_stock(quantiteChange);
+        } else if ("KG".equals(transactionRequests.get(0).getUnite())) {
+            double change = transactionRequests.get(0).getQuantite();
+            stock.setQuantite_stock(change);
+        }
+        stock.setUnite(Unite.valueOf("KG"));
         
         // Sauvegarder le nouveau stock
         stockRepositories.saveStock(stock);
@@ -121,6 +127,9 @@ public class TransactionServiceImpl {
                 stock = new Stock();
                 stock.setLieu_de_transaction(LieuDeTransaction.valueOf(transactionRequests.get(0).getLieu_stock()));
                 stock.setProduitAvecDetail(produitAvecDetail);
+                if (Objects.equals(transactionRequests.get(0).getQuantite(), "T")) {
+                  stock.setQuantite_stock(transactionRequests.get(0).getQuantite()*1000);
+                }
                 stock.setQuantite_stock(transactionRequests.get(0).getQuantite());
                 stock.setUnite(Unite.valueOf(transactionRequests.get(0).getUnite()));
 
