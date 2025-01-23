@@ -66,7 +66,12 @@ public class ExtractFactureRepositories {
                 "            'quantite', t.quantite,\n" +
                 "            'unite', t.unite,\n" +
                 "            'prix', t.prix_unitaire,\n" +
-                "            'total', t.quantite * t.prix_unitaire\n" +
+                "            'total', t.prix_unitaire * (\n" +
+                "                CASE \n" +
+                "                    WHEN t.unite = 'T' THEN t.quantite * 1000 \n" +
+                "                    ELSE t.quantite \n" +
+                "                END\n" +
+                "            )\n" +
                 "        )\n" +
                 "    ) AS lignes_facture\n" +
                 "FROM \n" +
@@ -82,9 +87,16 @@ public class ExtractFactureRepositories {
                 "WHERE \n" +
                 "    dt.type_de_transaction = 'SORTIE'\n" +
                 "GROUP BY \n" +
-                "    dt.id_detail_transaction, c.nom, c.prenom, c.adresse, c.telephone, dt.date_de_transaction, dt.lieu_de_transaction\n" +
+                "    dt.id_detail_transaction, \n" +
+                "    c.nom, \n" +
+                "    c.prenom, \n" +
+                "    c.adresse, \n" +
+                "    c.telephone, \n" +
+                "    dt.date_de_transaction, \n" +
+                "    dt.lieu_de_transaction\n" +
                 "ORDER BY \n" +
-                "    dt.date_de_transaction DESC;\n";
+                "    dt.date_de_transaction DESC;";
+
         List<ExtractFacture> extractFactures = new ArrayList<>();
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
