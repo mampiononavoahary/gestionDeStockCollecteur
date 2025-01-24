@@ -18,7 +18,11 @@ public class ExtractClients implements Serializable {
     private String nom;
     private String prenom;
     private int total_transaction;
-    private Double total_paye;
-    private Double total_en_attente;
+    private int total_vente;
+    private Double total_vente_paye;
+    private Double total_vente_en_attente;
+    private int total_achat;
+    private Double total_achat_paye;
+    private Double total_achat_en_attente;
 }
 
