@@ -86,6 +86,7 @@ public class ExtractFactureRepositories {
                 "    clients c ON dt.id_client = c.id_clients\n" +
                 "WHERE \n" +
                 "    dt.type_de_transaction = 'SORTIE'\n" +
+                "    AND t.status = 'PAYE'\n" +
                 "GROUP BY \n" +
                 "    dt.id_detail_transaction, \n" +
                 "    c.nom, \n" +

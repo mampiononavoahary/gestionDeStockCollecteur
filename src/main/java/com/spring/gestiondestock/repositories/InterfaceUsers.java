@@ -9,5 +9,5 @@ public interface InterfaceUsers<T>{
     T Update(T toUpdate);
     T save(T toSave);
     T delete(T toDelete);
-    T findByName(String name);
+    T findByName(String name) throws SQLException, ClassNotFoundException;
 }

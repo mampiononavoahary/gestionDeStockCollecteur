@@ -51,4 +51,7 @@ public class StockServiceImpl {
         }
         return stockRepositories.updateStock(stock,id);
     }
+    public Double updateQuantiteStock(Double quantite,int id) throws SQLException, ClassNotFoundException {
+        return stockRepositories.updateQuantiteStock(quantite,id);
+    }
 }

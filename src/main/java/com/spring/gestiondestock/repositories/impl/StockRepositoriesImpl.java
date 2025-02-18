@@ -72,6 +72,20 @@ public class StockRepositoriesImpl {
         }
         return stock;
     }
+    public Double updateQuantiteStock(Double quantite,int id) throws SQLException, ClassNotFoundException {
+        String sql = "UPDATE Stock SET quantite_stock = ? WHERE id_stock = ?;";
+        getConnection();
+        try (PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setDouble(1,quantite);
+            ps.setInt(2,id);
+
+            int rows = ps.executeUpdate();
+            if (rows >0){
+                log.info("Stock updated successfuly");
+            }
+        }
+        return quantite;
+    }
     public Stock saveStock(Stock toSave) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO Stock (lieu_stock,id_produit_avec_detail,quantite_stock,unite) values (CAST(? AS lieu_de_transaction),?,?,CAST(? AS unite));";
         getConnection();

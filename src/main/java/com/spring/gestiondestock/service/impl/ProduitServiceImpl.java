@@ -1,10 +1,17 @@
 package com.spring.gestiondestock.service.impl;
 
+import com.spring.gestiondestock.dtos.requests.DetailProduitRequest;
+import com.spring.gestiondestock.dtos.requests.ProduitAvecDetailRequest;
 import com.spring.gestiondestock.dtos.requests.ProduitRequest;
+import com.spring.gestiondestock.dtos.responses.ProduitAvecDetailResponse;
 import com.spring.gestiondestock.dtos.responses.ProduitResponse;
 import com.spring.gestiondestock.mappers.ClientsMapper;
 import com.spring.gestiondestock.mappers.ProduitMapper;
+import com.spring.gestiondestock.model.DetailProduit;
 import com.spring.gestiondestock.model.Produit;
+import com.spring.gestiondestock.model.ProduitAvecDetail;
+import com.spring.gestiondestock.repositories.impl.DetailProduitRepositoriesImpl;
+import com.spring.gestiondestock.repositories.impl.ProduitAvecDetailRepositoriesImpl;
 import com.spring.gestiondestock.repositories.impl.ProduitRepositoriesImpl;
 import com.spring.gestiondestock.service.ServiceProduit;
 
@@ -19,14 +26,18 @@ import java.util.List;
 @Service
 public class ProduitServiceImpl implements ServiceProduit {
     private static final Logger log = LoggerFactory.getLogger(ProduitServiceImpl.class);
-    private final ProduitRepositoriesImpl produitRepositories;
-    private final ProduitMapper produitMapper;
-    private final ClientsMapper clientsMapper;
+    private static ProduitRepositoriesImpl produitRepositories;
+    private static ProduitMapper produitMapper;
+    private static DetailProduitServiceImpl detailProduitService;
+    private static ProduitAvecDetailServiceImpl produitAvecDetailService;
+    private static ClientsMapper clientsMapper;
 
-    public ProduitServiceImpl(ProduitRepositoriesImpl produitRepositories, ProduitMapper produitMapper, ClientsMapper clientsMapper) {
-        this.produitRepositories = produitRepositories;
-        this.produitMapper = produitMapper;
-        this.clientsMapper = clientsMapper;
+    public ProduitServiceImpl(ProduitRepositoriesImpl produitRepositories, ProduitMapper produitMapper, DetailProduitServiceImpl detailProduitService, ProduitAvecDetailServiceImpl produitAvecDetailService, ClientsMapper clientsMapper) {
+        ProduitServiceImpl.produitRepositories = produitRepositories;
+        ProduitServiceImpl.produitMapper = produitMapper;
+        ProduitServiceImpl.detailProduitService = detailProduitService;
+        ProduitServiceImpl.produitAvecDetailService = produitAvecDetailService;
+        ProduitServiceImpl.clientsMapper = clientsMapper;
     }
 
     @Override
@@ -45,6 +56,7 @@ public class ProduitServiceImpl implements ServiceProduit {
         if(produit == null) {
             log.info("produit:{} not found", id);
         }
+        assert produit != null;
         return produitMapper.toProduitResponse(produit);
     }
 
@@ -52,6 +64,7 @@ public class ProduitServiceImpl implements ServiceProduit {
     public ProduitResponse save(ProduitRequest produitRequest) throws SQLException, ClassNotFoundException {
         var addProduit = produitMapper.toProduit(produitRequest);
         var save = produitRepositories.createProduit(addProduit);
+        assert save != null;
         return produitMapper.toProduitResponse(save);
     }
 
@@ -96,6 +109,7 @@ public class ProduitServiceImpl implements ServiceProduit {
         if(produit == null) {
             log.info("produit:{} not found", nom);
         }
+        assert produit != null;
         return produitMapper.toProduitResponse(produit);
     }
 }

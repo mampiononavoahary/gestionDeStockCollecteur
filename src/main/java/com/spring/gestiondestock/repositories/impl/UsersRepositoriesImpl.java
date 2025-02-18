@@ -4,6 +4,7 @@ import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.Users;
 import com.spring.gestiondestock.model.enums.RoleUser;
 import com.spring.gestiondestock.repositories.InterfaceUsers;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
     private static Connection connection;
 
@@ -70,7 +72,18 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
     }
 
     @Override
-    public Users findByName(String name) {
-        return null;
+    public Users findByName(String username) throws SQLException, ClassNotFoundException {
+        String query = "SELECT * FROM users WHERE username = ?";
+        getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return extractUserFromResultSet(resultSet);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Retourne null si aucun utilisateur trouvé
     }
 }

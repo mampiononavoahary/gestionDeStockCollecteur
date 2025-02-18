@@ -1,6 +1,7 @@
 package com.spring.gestiondestock.service.impl;
 
 import com.spring.gestiondestock.dtos.requests.DetailTransactionRequest;
+import com.spring.gestiondestock.dtos.requests.TransactionRequest;
 import com.spring.gestiondestock.dtos.responses.DetailProduitResponse;
 import com.spring.gestiondestock.dtos.responses.DetailTransactionResponse;
 import com.spring.gestiondestock.mappers.DetailTransactionMapper;

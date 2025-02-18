@@ -70,39 +70,13 @@ create table if not exists stock(
     quantite_stock double precision,
     unite unite
 );
-
-SELECT 
-    t.id_transaction,
-    dt.id_detail_transaction,
-    t.quantite,
-    t.unite,
-    t.status,
-    t.lieu_stock,
-    dp.nom_detail,
-    dp.symbole,
-    dp.description,
-    dp.prix_d_achat,
-    dp.prix_de_vente,
-    c.nom AS client_nom,
-    c.prenom AS client_prenom,
-    c.adresse AS client_adresse,
-    c.telephone AS client_telephone,
-    dt.type_de_transaction,
-    dt.date_de_transaction,
-    dt.lieu_de_transaction,
-    p.nom_produit
-FROM 
-    transactions t
-JOIN 
-    produit_avec_detail pad ON t.id_produit_avec_detail = pad.id_produit_avec_detail
-JOIN 
-    detail_produit dp ON pad.id_detail_produit = dp.id_detail_produit
-JOIN 
-    produit p ON pad.id_produit = p.id_produit
-JOIN 
-    detail_transaction dt ON t.id_detail_transaction = dt.id_detail_transaction
-JOIN 
-    clients c ON dt.id_client = c.id_clients
-WHERE 
-    dt.type_de_transaction = 'SORTIE' ORDER BY dt.date_de_transaction DESC; 
-
+CREATE table pret_bancaire(
+  id_pret_bancaire serial PRIMARY KEY,
+  date_de_pret timestamp,
+  quantite double precision,
+  prix_unitaire double precision,
+  taux_augmentation numeric(5,3),
+  taux_mensuel numeric(5,3),
+  date_de_remboursement timestamp
+);
+select s.lieu_stock,JSON_AGG(JSON_BUILD_OBJECT('quantite',s.quantite_stock,'produit',dp.nom_detail))AS stock_extract from stock s inner join produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail inner join detail_produit dp on dp.id_detail_produit = pdt.id_detail_produit GROUP BY s.lieu_stock;

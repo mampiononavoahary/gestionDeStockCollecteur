@@ -13,7 +13,7 @@ public class ExtraxtSumTransactionService {
     public ExtraxtSumTransactionService(ExtractSumTransactionRepository extractSumTransactionRepository) {
         this.extractSumTransactionRepository = new ExtractSumTransactionRepository();
     }
-    public ExtractEnterAndExitCount SumTransactionEnterAndExit(String lieu, Date date) throws SQLException, ClassNotFoundException {
-        return extractSumTransactionRepository.SumTransactionEnterAndExit(lieu, date);
+    public ExtractEnterAndExitCount SumTransactionEnterAndExit(String lieu, Date date, Date dateBebut,Date dateFin) throws SQLException, ClassNotFoundException {
+        return extractSumTransactionRepository.SumTransactionEnterAndExit(lieu, date,dateBebut,dateFin);
     }
 }

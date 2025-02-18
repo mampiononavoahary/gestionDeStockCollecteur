@@ -16,11 +16,11 @@ import java.util.List;
 @Service
 public class DetailProduitServiceImpl implements ServiceDetailProduit {
     private static DetailProduitRepositoriesImpl detailProduitRepositories;
-    private final DetailProduitMapper detailProduitMapper;
+    private static DetailProduitMapper detailProduitMapper;
 
     public DetailProduitServiceImpl(DetailProduitMapper detailProduitMapper, DetailProduitRepositoriesImpl detailProduitRepositories) {
-        this.detailProduitMapper = detailProduitMapper;
-        this.detailProduitRepositories = detailProduitRepositories;
+        DetailProduitServiceImpl.detailProduitMapper = detailProduitMapper;
+        DetailProduitServiceImpl.detailProduitRepositories = detailProduitRepositories;
     }
 
     @Override

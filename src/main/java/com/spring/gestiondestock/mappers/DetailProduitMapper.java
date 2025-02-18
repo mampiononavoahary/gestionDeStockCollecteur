@@ -17,6 +17,7 @@ public class DetailProduitMapper {
                 .prix_d_achat(detailProduitRequest.getPrix_d_achat())
                 .prix_de_vente(detailProduitRequest.getPrix_de_vente())
                 .unite(detailProduitRequest.getUnite())
+                .image_url(detailProduitRequest.getImage_url())
                 .build();
     }
     public DetailProduitResponse toDetailProduitResponse(DetailProduit detailProduit) {
@@ -28,6 +29,7 @@ public class DetailProduitMapper {
                 detailProduit.getPrix_d_achat(),
                 detailProduit.getPrix_de_vente(),
                 detailProduit.getUnite(),
+                detailProduit.getImage_url(),
                 detailProduit.getListProduitAvecDetail()
         );
     }

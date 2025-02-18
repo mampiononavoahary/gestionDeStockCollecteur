@@ -20,16 +20,28 @@ public class ExtractSumTransaction {
         this.extraxtSumTransactionService = extraxtSumTransactionService;
     }
     @GetMapping("/enterandexit")
-    public ExtractEnterAndExitCount SumTransactionEnterAndExit(@RequestParam (required = false) String lieu, @RequestParam (required = false) String date) throws SQLException, ClassNotFoundException {
-        Date formatterDate = null;
+     public ExtractEnterAndExitCount sumTransactionEnterAndExit(
+            @RequestParam(required = false) String lieu,
+            @RequestParam(required = false) String date,
+            @RequestParam(required = false) String dateDebut,
+            @RequestParam(required = false) String dateFin
+    ) throws SQLException, ClassNotFoundException {
+        Date formattedDate = null;
+        Date dateDebutFormatted = null;
+        Date dateFinFormatted = null;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
 
         if (date != null && !date.isEmpty()) {
-            // Convertir la date en LocalDate
-            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-            // Convertir LocalDate en java.sql.Date
-            formatterDate = Date.valueOf(localDate);
+            formattedDate = Date.valueOf(LocalDate.parse(date, formatter));
+        }
+        if (dateDebut != null && !dateDebut.isEmpty()) {
+            dateDebutFormatted = Date.valueOf(LocalDate.parse(dateDebut, formatter));
+        }
+        if (dateFin != null && !dateFin.isEmpty()) {
+            dateFinFormatted = Date.valueOf(LocalDate.parse(dateFin, formatter));
         }
 
-        return extraxtSumTransactionService.SumTransactionEnterAndExit(lieu, formatterDate);
+        return extraxtSumTransactionService.SumTransactionEnterAndExit(lieu, formattedDate, dateDebutFormatted, dateFinFormatted);
     }
 }

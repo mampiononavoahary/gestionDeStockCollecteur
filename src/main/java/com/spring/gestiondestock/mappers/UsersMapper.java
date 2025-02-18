@@ -6,6 +6,8 @@ import com.spring.gestiondestock.model.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @RequiredArgsConstructor
 @Component
 public class UsersMapper {

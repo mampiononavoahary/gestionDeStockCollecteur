@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class ProduitController {
     private final ProduitServiceImpl produitService;
 

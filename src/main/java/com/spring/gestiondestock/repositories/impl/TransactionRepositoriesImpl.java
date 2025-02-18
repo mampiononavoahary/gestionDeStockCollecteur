@@ -90,4 +90,31 @@ public class TransactionRepositoriesImpl {
       }      
       return transaction;
     }
+    public Transaction findById(int id_transaction) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM transactions WHERE id_transaction=?;";
+        getConnection();
+        Transaction transaction = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+            preparedStatement.setInt(1,id_transaction);
+           ResultSet resultSet = preparedStatement.executeQuery();
+           if (resultSet.next()){
+               transaction = extractTransactionFromResultSet(resultSet);
+           }
+        } catch (SQLException e) {
+            throw new SQLException("Erreur lors de la récupération de la transaction avec ID " + id_transaction, e);
+        }
+        return transaction;
+    }
+    public void updateStatusTransaction(int id_transaction,String status) throws SQLException, ClassNotFoundException {
+      String sql = "UPDATE transactions SET status=CAST(? AS status) WHERE id_transaction=?;";
+      getConnection();
+      try(PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
+        prepareStatement.setString(1,status);
+        prepareStatement.setInt(2,id_transaction);
+        int rows = prepareStatement.executeUpdate();
+        if (rows == 1) {
+          System.out.println("Transaction updated");
+        }
+      }
+    }
 }

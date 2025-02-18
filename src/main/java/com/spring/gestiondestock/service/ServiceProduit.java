@@ -1,8 +1,12 @@
 package com.spring.gestiondestock.service;
 
+import com.spring.gestiondestock.dtos.requests.DetailProduitRequest;
+import com.spring.gestiondestock.dtos.requests.ProduitAvecDetailRequest;
 import com.spring.gestiondestock.dtos.requests.ProduitRequest;
 import com.spring.gestiondestock.dtos.responses.ProduitResponse;
+import com.spring.gestiondestock.model.DetailProduit;
 import com.spring.gestiondestock.model.Produit;
+import com.spring.gestiondestock.model.ProduitAvecDetail;
 
 import java.sql.SQLException;
 import java.util.List;

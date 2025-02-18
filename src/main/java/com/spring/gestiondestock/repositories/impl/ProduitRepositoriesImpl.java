@@ -9,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,17 +62,26 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
 
     @Override
     public Produit createProduit(Produit produit) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO produit (nom_produit) VALUES (?);";
+        String sql = "INSERT INTO produit (nom_produit) VALUES (?) RETURNING id_produit;";
         getConnection();
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, produit.getNom_produit());
-            int rows = ps.executeUpdate();
-            if (rows == 1) {
-                log.info("rows affected:{}",produit);
+
+            // Utilise executeQuery() ici aussi
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                int generatedID = resultSet.getInt(1);
+                produit.setId_produit(generatedID);
+                log.info("Produit inséré avec ID: {}", generatedID);
             }
+        }catch (SQLException e) {
+            e.printStackTrace();
         }
         return produit;
     }
+
+
 
     @Override
     public Produit updateProduit(Produit produit, int id_produit) throws SQLException, ClassNotFoundException {

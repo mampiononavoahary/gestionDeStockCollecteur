@@ -27,4 +27,8 @@ public class StockController {
     public Stock update(@RequestBody Stock stockRequest, @PathVariable String id_produit_avec_detail) throws SQLException, ClassNotFoundException {
         return stockService.update(stockRequest, Integer.parseInt(id_produit_avec_detail));
     }
+    @PutMapping("/put/quantite/{id_stock}")
+    public Double updateQuantite(@RequestBody Double quantite, @PathVariable String id_stock) throws SQLException, ClassNotFoundException {
+        return stockService.updateQuantiteStock(quantite, Integer.parseInt(id_stock));
+    }
 }

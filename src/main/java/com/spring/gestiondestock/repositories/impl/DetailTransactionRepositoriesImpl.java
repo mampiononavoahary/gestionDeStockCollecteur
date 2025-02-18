@@ -48,7 +48,9 @@ public class DetailTransactionRepositoriesImpl {
         return detailTransactions;
     }
     public DetailTransaction SaveDetailTransaction(DetailTransaction detailTransaction) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO detail_transaction(type_de_transaction,date_de_transaction,lieu_de_transaction,id_client) VALUES(CAST(? AS type_de_transaction),?,CAST(? AS lieu_de_transaction),?);";
+        String sql = "INSERT INTO detail_transaction(type_de_transaction,date_de_transaction,lieu_de_transaction,id_client) " +
+                "VALUES(CAST(? AS type_de_transaction),?,CAST(? AS lieu_de_transaction),?) "+
+        "RETURNING id_detail_transaction;";
         getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, detailTransaction.getType_de_transaction().name());
@@ -56,9 +58,11 @@ public class DetailTransactionRepositoriesImpl {
             preparedStatement.setString(3, detailTransaction.getLieu_de_transaction().name());
             preparedStatement.setInt(4, detailTransaction.getId_client().getId_clients());
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                log.info("Detail Transaction Saved");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                int generatedId = resultSet.getInt("id_detail_transaction");
+                detailTransaction.setId_detail_transaction(generatedId);
+                log.info("Detail Transaction Saved with ID: " + generatedId);
             }
         }catch (SQLException e) {
             e.printStackTrace();
