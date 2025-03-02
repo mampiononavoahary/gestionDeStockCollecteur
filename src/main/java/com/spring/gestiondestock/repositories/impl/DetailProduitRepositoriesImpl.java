@@ -3,6 +3,7 @@ package com.spring.gestiondestock.repositories.impl;
 import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.DetailProduit;
 import com.spring.gestiondestock.model.ProduitAvecDetail;
+import com.spring.gestiondestock.model.enums.CategoryProduit;
 import com.spring.gestiondestock.model.enums.Unite;
 import com.spring.gestiondestock.repositories.InterfaceDetailProduits;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         int id = resultSet.getInt("id_detail_produit");
         String nom = resultSet.getString("nom_detail");
         String symbol = resultSet.getString("symbole");
+        String categorie = resultSet.getString("categorie_produit");
         String description = resultSet.getString("description");
         Double prix_d_achat = resultSet.getDouble("prix_d_achat");
         Double prix_de_vente = resultSet.getDouble("prix_de_vente");
@@ -31,10 +33,12 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         String image = resultSet.getString("image_url");
         List<ProduitAvecDetail> produitAvecDetails = new ArrayList<>();
         Unite unite = null;
-        if (uniteStr != null) {
-            unite = Unite.valueOf(uniteStr);  // Conversion explicite en enum
+        CategoryProduit categoryProduit = null;
+        if (uniteStr != null || categoryProduit != null) {
+            unite = Unite.valueOf(uniteStr);
+            categoryProduit = CategoryProduit.valueOf(categorie);
         }
-        return new DetailProduit(id, nom,symbol, description, prix_d_achat, prix_de_vente,unite,image,produitAvecDetails);
+        return new DetailProduit(id, nom,symbol,categoryProduit, description, prix_d_achat, prix_de_vente,unite,image,produitAvecDetails);
     }
     @Override
     public List<DetailProduit> getDetailProduits() throws SQLException, ClassNotFoundException {
@@ -55,18 +59,19 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
 
     @Override
     public DetailProduit toSave(DetailProduit toSave) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO detail_produit (nom_detail,symbole,description,prix_d_achat,prix_de_vente,unite,image_url) " +
-                "VALUES (?,?,?,?,?,CAST(? AS unite),?) RETURNING id_detail_produit;";
+        String sql = "INSERT INTO detail_produit (nom_detail,symbole,categorie_produit,description,prix_d_achat,prix_de_vente,unite,image_url) " +
+                "VALUES (?,?,CAST(? AS categorie_produit),?,?,?,CAST(? AS unite),?) RETURNING id_detail_produit;";
         getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, toSave.getNom_detail());
             statement.setString(2, toSave.getSymbole());
-            statement.setString(3, toSave.getDescription());
-            statement.setDouble(4, toSave.getPrix_d_achat());
-            statement.setDouble(5, toSave.getPrix_de_vente());
-            statement.setString(6, toSave.getUnite().name()); // Vérifie que cette valeur existe bien dans ENUM
-            statement.setString(7, toSave.getImage_url());
+            statement.setString(3, toSave.getCategorie_produit().name());
+            statement.setString(4, toSave.getDescription());
+            statement.setDouble(5, toSave.getPrix_d_achat());
+            statement.setDouble(6, toSave.getPrix_de_vente());
+            statement.setString(7, toSave.getUnite().name()); // Vérifie que cette valeur existe bien dans ENUM
+            statement.setString(8, toSave.getImage_url());
 
             ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {

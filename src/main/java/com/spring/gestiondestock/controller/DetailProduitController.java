@@ -1,10 +1,13 @@
 package com.spring.gestiondestock.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.gestiondestock.dtos.requests.DetailProduitRequest;
 import com.spring.gestiondestock.dtos.responses.DetailProduitResponse;
 import com.spring.gestiondestock.model.DetailProduit;
 import com.spring.gestiondestock.service.impl.DetailProduitServiceImpl;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,8 +25,14 @@ public class DetailProduitController {
         return detailProduitService.getAllDetailProduit();
     }
     @PostMapping
-    public DetailProduitResponse addDetailProduit(@RequestBody DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
-        return detailProduitService.createDetailProduit(detailProduitRequest);
+    public DetailProduitResponse addDetailProduit(@RequestParam("file") MultipartFile image_url,
+                                                  @RequestParam("registerRequest") String detailProduitRequestJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        DetailProduitRequest detailProduitRequest = objectMapper.readValue(detailProduitRequestJson, DetailProduitRequest.class);
+        if (image_url.isEmpty() || detailProduitRequest == null) {
+            return null;
+        }
+        return detailProduitService.createDetailProduit(image_url, detailProduitRequest);
     }
     @PutMapping("/{id_detail}")
     public DetailProduitResponse updateDetailProduit(@RequestBody DetailProduit detailProduit) throws SQLException, ClassNotFoundException {

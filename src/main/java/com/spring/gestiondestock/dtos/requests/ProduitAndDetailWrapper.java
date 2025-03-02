@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class ProduitAndDetailWrapper {
-    private ProduitRequest produitRequest;
+    private int produit;
     private DetailProduitRequest detailProduitRequest;
 }

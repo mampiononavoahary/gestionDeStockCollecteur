@@ -8,6 +8,7 @@ import com.spring.gestiondestock.repositories.impl.DetailProduitRepositoriesImpl
 import com.spring.gestiondestock.service.ServiceDetailProduit;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ public class DetailProduitServiceImpl implements ServiceDetailProduit {
     }
 
     @Override
-    public DetailProduitResponse createDetailProduit(DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
-        var detail = detailProduitMapper.toDetailProduit(detailProduitRequest);
+    public DetailProduitResponse createDetailProduit(MultipartFile image_url,DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
+        var detail = detailProduitMapper.toDetailProduit(image_url,detailProduitRequest);
         var save = detailProduitRepositories.toSave(detail);
         return detailProduitMapper.toDetailProduitResponse(save);
     }

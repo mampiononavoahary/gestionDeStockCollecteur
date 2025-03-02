@@ -6,6 +6,7 @@ create type role_user as enum ('USER','ADMIN');
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 create type unite as enum('KG','T','AR');
 create type type_de_transaction as enum ('ENTRE', 'SORTIE');
+create type categorie_produit as enum('PRODUIT_PREMIER','PRODUIT_FINI');
 create type lieu_de_transaction as enum('ITAOSY','ALATSINAINIKELY','AMBATONDRAZAKA','ANOSIZATO','AMPASIKA');
 create type status as enum('PAYE','EN_ATTENTE');
 create table if not exists users(
@@ -24,6 +25,7 @@ create table if not exists detail_produit(
                      nom_detail varchar(200),
                     symbole varchar(5),
                     description varchar(200),
+                    categorie_produit categorie_produit,
                     prix_d_achat double precision check ( prix_d_achat >=0),
                     prix_de_vente double precision check ( prix_de_vente >=0 ),
                     unite unite,
@@ -41,7 +43,7 @@ create table if not exists detail_transaction(
     uuid_detail UUID DEFAULT uuid_generate_v4(),
     type_de_transaction type_de_transaction,
     date_de_transaction timestamp,
-    lieu_de_transaction lieu_transaction,
+    lieu_de_transaction lieu_de_transaction,
     id_client integer references clients(id_clients)
 );
 create table if not exists produit(
@@ -65,12 +67,12 @@ create table if not exists transactions(
 );
 create table if not exists stock(
     id_stock serial primary key ,
-    lieu_stock lieu_transaction,
+    lieu_stock lieu_de_transaction,
     id_produit_avec_detail integer references produit_avec_detail(id_produit_avec_detail),
     quantite_stock double precision,
     unite unite
 );
-CREATE table pret_bancaire(
+CREATE table if not exists pret_bancaire(
   id_pret_bancaire serial PRIMARY KEY,
   date_de_pret timestamp,
   quantite double precision,
@@ -79,4 +81,3 @@ CREATE table pret_bancaire(
   taux_mensuel numeric(5,3),
   date_de_remboursement timestamp
 );
-select s.lieu_stock,JSON_AGG(JSON_BUILD_OBJECT('quantite',s.quantite_stock,'produit',dp.nom_detail))AS stock_extract from stock s inner join produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail inner join detail_produit dp on dp.id_detail_produit = pdt.id_detail_produit GROUP BY s.lieu_stock;

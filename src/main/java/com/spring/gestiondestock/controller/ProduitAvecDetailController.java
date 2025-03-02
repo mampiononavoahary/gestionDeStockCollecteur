@@ -1,5 +1,7 @@
 package com.spring.gestiondestock.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.gestiondestock.dtos.requests.ProduitAndDetailWrapper;
 import com.spring.gestiondestock.dtos.responses.ProduitAvecDetailResponse;
 import com.spring.gestiondestock.mappers.DetailProduitMapper;
@@ -9,6 +11,7 @@ import com.spring.gestiondestock.model.extractModel.ExtractProduitWitDetail;
 import com.spring.gestiondestock.repositories.impl.ProduitAvecDetailRepositoriesImpl;
 import com.spring.gestiondestock.service.impl.ProduitAvecDetailServiceImpl;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -35,8 +38,14 @@ public class ProduitAvecDetailController {
         return produitAvecDetailRepositories.findProduitAvecDetailById(Integer.parseInt(id_produit_avec_detail));
     }
     @PostMapping
-    public ProduitAvecDetailResponse save(@RequestBody ProduitAndDetailWrapper produitAvecDetail) throws SQLException, ClassNotFoundException {
-        return produitAvecDetailService.createProduitAvecDetail(produitMapper.toProduit(produitAvecDetail.getProduitRequest()), detailProduitMapper.toDetailProduit(produitAvecDetail.getDetailProduitRequest()));
+    public ProduitAvecDetailResponse save(@RequestParam("image_url") MultipartFile image_url, @RequestParam("produitAndDetail") String produitAvecDetailJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProduitAndDetailWrapper produitAvecDetailRequest = objectMapper.readValue(produitAvecDetailJson, ProduitAndDetailWrapper.class);
+        if (produitAvecDetailRequest == null) {
+            return null;
+        }
+
+        return produitAvecDetailService.createProduitAvecDetail(produitAvecDetailRequest.getProduit(), produitAvecDetailRequest.getDetailProduitRequest(), image_url);
     }
     @DeleteMapping("/delete/{id_produit_avec_detail}")
     public void delete(@PathVariable String id_produit_avec_detail) throws SQLException, ClassNotFoundException {
