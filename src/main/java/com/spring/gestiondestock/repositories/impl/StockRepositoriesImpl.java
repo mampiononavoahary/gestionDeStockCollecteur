@@ -56,6 +56,19 @@ public class StockRepositoriesImpl {
         }
         return null;
     }
+    public Stock findByLieuAndNameProduct(String lieu,String produit) throws SQLException, ClassNotFoundException {
+        String sql = "SELECT * FROM Stock s inner join produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail inner join detail_produit dp on dp.id_detail_produit = pdt.id_detail_produit where s.lieu_stock = ?::lieu_de_transaction AND dp.nom_detail = ?;";
+        getConnection();
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setString(1,lieu);
+            ps.setString(2,produit);
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()){
+                return extractStock(resultSet);
+            }
+        }
+        return null;
+    }
     public Stock updateStock(Stock stock,int id) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Stock SET lieu_stock = ?::lieu_de_transaction, quantite_stock = ?, unite = ?::unite WHERE id_stock = ?;";
         getConnection();

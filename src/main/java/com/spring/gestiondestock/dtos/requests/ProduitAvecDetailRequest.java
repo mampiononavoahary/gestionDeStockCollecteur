@@ -11,5 +11,6 @@ import lombok.Setter;
 @Setter
 public class ProduitAvecDetailRequest {
     private int id_produit;
+    private Integer id_type_produit;
     private int id_detail_produit;
 }

@@ -32,14 +32,25 @@ public class ProduitAvecDetailServiceImpl {
         ProduitAvecDetailServiceImpl.detailProduitMapper = detailProduitMapper;
     }
 
-    public ProduitAvecDetailResponse createProduitAvecDetail(int produit, DetailProduitRequest detailProduitRequest, MultipartFile image_url) throws SQLException, ClassNotFoundException {
-        var detailProduit = detailProduitMapper.toDetailProduit(image_url,detailProduitRequest);
+
+    public ProduitAvecDetailResponse createProduitAvecDetail(int produit, Integer type_produit, DetailProduitRequest detailProduitRequest, MultipartFile image_url) throws SQLException, ClassNotFoundException {
+        var detailProduit = detailProduitMapper.toDetailProduit(image_url, detailProduitRequest);
         var saveDetailProduitRequest = detailProduitRepositories.toSave(detailProduit);
 
         ProduitAvecDetailRequest produitAvecDetailRequest = new ProduitAvecDetailRequest();
         produitAvecDetailRequest.setId_produit(produit);
+
+        // Gestion de type_produit null
+        if (type_produit != null) {
+            produitAvecDetailRequest.setId_type_produit(type_produit);
+        } else {
+            produitAvecDetailRequest.setId_type_produit(null);  // Assigner null si type_produit est null
+        }
+
         produitAvecDetailRequest.setId_detail_produit(saveDetailProduitRequest.getId_detail_produit());
+
         var produitAvecDetail = produitAvecDetailRepositories.saveProduitAvecDetail(produitAvecDetailMapper.toEntity(produitAvecDetailRequest));
         return produitAvecDetailMapper.toResponse(produitAvecDetail);
     }
+
 }

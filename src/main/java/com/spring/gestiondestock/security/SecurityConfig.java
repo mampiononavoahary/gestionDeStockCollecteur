@@ -35,8 +35,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // Appliquer CORS à la sécurité
                 .authorizeRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/auth/register").hasRole("ADMIN")
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())  // Autres routes nécessitent une authentification
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Stateless

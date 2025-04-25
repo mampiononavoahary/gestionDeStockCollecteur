@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ExtractProduitWitDetail {
     private int id_produit_avec_detail;
     private String nom_detail;
+    private String categorie;
 }

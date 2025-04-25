@@ -41,12 +41,23 @@ public class ProduitAvecDetailController {
     public ProduitAvecDetailResponse save(@RequestParam("image_url") MultipartFile image_url, @RequestParam("produitAndDetail") String produitAvecDetailJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProduitAndDetailWrapper produitAvecDetailRequest = objectMapper.readValue(produitAvecDetailJson, ProduitAndDetailWrapper.class);
+
         if (produitAvecDetailRequest == null) {
             return null;
         }
 
-        return produitAvecDetailService.createProduitAvecDetail(produitAvecDetailRequest.getProduit(), produitAvecDetailRequest.getDetailProduitRequest(), image_url);
+        // Vérification de null avant d'envoyer dans la méthode de service
+        Integer typeProduit = produitAvecDetailRequest.getType_produit();
+        if (typeProduit == null || typeProduit == 0) {
+            // Si type_produit est null ou 0, nous assignons null
+            produitAvecDetailRequest.setType_produit(null);
+        }
+
+        return produitAvecDetailService.createProduitAvecDetail(produitAvecDetailRequest.getProduit(),
+                produitAvecDetailRequest.getType_produit(), produitAvecDetailRequest.getDetailProduitRequest(), image_url);
     }
+
+
     @DeleteMapping("/delete/{id_produit_avec_detail}")
     public void delete(@PathVariable String id_produit_avec_detail) throws SQLException, ClassNotFoundException {
         produitAvecDetailRepositories.deleteProduitAvecDetailById(Integer.parseInt(id_produit_avec_detail));

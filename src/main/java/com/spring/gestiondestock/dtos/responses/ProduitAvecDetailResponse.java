@@ -1,9 +1,6 @@
 package com.spring.gestiondestock.dtos.responses;
 
-import com.spring.gestiondestock.model.DetailProduit;
-import com.spring.gestiondestock.model.Produit;
-import com.spring.gestiondestock.model.Stock;
-import com.spring.gestiondestock.model.Transaction;
+import com.spring.gestiondestock.model.*;
 import lombok.*;
 
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
 public class ProduitAvecDetailResponse {
     private int id;
     private Produit produit;
+    private TypeProduit typeProduit;
     private DetailProduit detailProduit;
     List<Transaction> transactionList;
     List<Stock> stockList; ;

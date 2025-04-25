@@ -31,4 +31,8 @@ public class StockController {
     public Double updateQuantite(@RequestBody Double quantite, @PathVariable String id_stock) throws SQLException, ClassNotFoundException {
         return stockService.updateQuantiteStock(quantite, Integer.parseInt(id_stock));
     }
+    @PostMapping("/transform")
+    public String produitPremierToFinie(@RequestParam String lieu_stock,@RequestParam String id_premier,@RequestParam String id_finie,@RequestParam String quantite) throws SQLException, ClassNotFoundException {
+        return stockService.produitPremierToFinie(lieu_stock,Integer.parseInt(id_premier),Integer.parseInt(id_finie),Double.valueOf(quantite));
+    }
 }

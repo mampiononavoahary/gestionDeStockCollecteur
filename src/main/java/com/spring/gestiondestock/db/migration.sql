@@ -50,9 +50,16 @@ create table if not exists produit(
     id_produit serial primary key ,
     nom_produit varchar(100)
 );
+create table if not exists type_produit(
+  id_type_produit serial primary key,
+  nom_type_produit varchar(100),
+  symbole varchar(5)
+);
+
 create table if not exists produit_avec_detail(
     id_produit_avec_detail serial primary key ,
     id_produit integer references produit(id_produit),
+    id_type_produit integer references type_produit(id_type_produit) null,
     id_detail_produit integer references detail_produit(id_detail_produit)
 );
 create table if not exists transactions(
@@ -75,9 +82,43 @@ create table if not exists stock(
 CREATE table if not exists pret_bancaire(
   id_pret_bancaire serial PRIMARY KEY,
   date_de_pret timestamp,
+  produit integer references produit(id_produit),
   quantite double precision,
+  unite unite,
   prix_unitaire double precision,
   taux_augmentation numeric(5,3),
   taux_mensuel numeric(5,3),
   date_de_remboursement timestamp
+);
+CREATE TABLE IF NOT EXISTS collecteur(
+  id_collecteur serial PRIMARY KEY,
+  nom varchar(100),
+  prenom varchar(100),
+  adresse varchar(100),
+  telephone varchar(100)
+);
+CREATE TABLE IF NOT EXISTS credit_collecteur(
+  id_credit_collecteur serial PRIMARY KEY,
+  date_de_credit timestamp,
+  montant double precision,
+  description varchar(200),
+  referance_credit varchar(200) unique,
+  status boolean,
+  id_collecteur integer references collecteur(id_collecteur)
+);
+CREATE TABLE IF NOT EXISTS debit_collecteur(
+  id_debit_collecteur serial PRIMARY KEY,
+  date_de_debit timestamp,
+  lieu_de_collection varchar(100),
+  description varchar(200),
+  id_credit_collecteur integer references credit_collecteur(id_credit_collecteur)
+);
+CREATE TABLE IF NOT EXISTS produits_collecter(
+  id_produits_collecter serial PRIMARY KEY,
+  id_debit_collecteur integer references debit_collecteur(id_debit_collecteur),
+  id_produit_avec_detail integer references produit_avec_detail(id_produit_avec_detail),
+  quantite double precision check ( quantite>0 ),
+  unite unite,
+  prix_unitaire double precision check ( prix_unitaire>0 ),
+  lieu_stock lieu_de_transaction
 );
