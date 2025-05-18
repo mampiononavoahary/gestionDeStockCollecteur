@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class LigneFacture {
     private String produit;
     private Double quantite;
-  private String unite;
+    private String unite;
     private Double prix;
     private Double total;
 }

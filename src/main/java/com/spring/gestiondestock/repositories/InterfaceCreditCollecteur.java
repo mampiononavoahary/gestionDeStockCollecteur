@@ -18,4 +18,8 @@ public interface InterfaceCreditCollecteur extends JpaRepository<CreditCollecteu
     @Override
     Optional<CreditCollecteur> findById(Long aLong);
 
+    List<CreditCollecteur> findByCollecteur_IdCollecteur(Long idCollecteur);
+
+    List<CreditCollecteur> findByReferanceCredit(String referanceCredit);
+
 }

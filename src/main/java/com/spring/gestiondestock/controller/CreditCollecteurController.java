@@ -35,4 +35,12 @@ public class CreditCollecteurController {
     public void deleteCreditCollecteur(@PathVariable Long id) {
         creditCollecteurService.deleteCreditCollecteur(id);
     }
+    @GetMapping("/collecteurid/{id_collecteur}")
+    public List<CreditCollecteur> findCreditCollecteurByCollecteurId(@PathVariable Long id_collecteur) {
+        return creditCollecteurService.findByIdCollecteur(id_collecteur);
+    }
+    @GetMapping("/ref")
+    public List<CreditCollecteur> findCreditCollecteurByCollecteurRef(@RequestParam String referanceCredit) {
+        return creditCollecteurService.findByReferanceCredit(referanceCredit);
+    }
 }

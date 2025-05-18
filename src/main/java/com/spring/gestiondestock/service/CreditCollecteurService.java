@@ -31,4 +31,10 @@ public class CreditCollecteurService {
     public Optional<CreditCollecteur> findCreditCollecteurById(Long id) {
         return interfaceCreditCollecteur.findById(id);
     }
+    public List<CreditCollecteur> findByIdCollecteur(Long id) {
+        return interfaceCreditCollecteur.findByCollecteur_IdCollecteur(id);
+    }
+    public List<CreditCollecteur> findByReferanceCredit(String referanceCredit) {
+        return interfaceCreditCollecteur.findByReferanceCredit(referanceCredit);
+    }
 }

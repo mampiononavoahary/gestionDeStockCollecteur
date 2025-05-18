@@ -1,5 +1,6 @@
 package com.spring.gestiondestock.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -36,10 +37,11 @@ public class CreditCollecteur {
     private String referanceCredit;
 
     @Column(name = "status")
-    private Boolean status;
+    private Boolean status = false;
 
     @ManyToOne
     @JoinColumn(name = "id_collecteur")
+    @JsonProperty("id_collecteur")
     private Collecteur collecteur;
 
     @PrePersist

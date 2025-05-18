@@ -1,5 +1,6 @@
 package com.spring.gestiondestock.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
