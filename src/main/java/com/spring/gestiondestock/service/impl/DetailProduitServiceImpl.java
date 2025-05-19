@@ -25,8 +25,8 @@ public class DetailProduitServiceImpl implements ServiceDetailProduit {
     }
 
     @Override
-    public DetailProduitResponse createDetailProduit(MultipartFile image_url,DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
-        var detail = detailProduitMapper.toDetailProduit(image_url,detailProduitRequest);
+    public DetailProduitResponse createDetailProduit(DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
+        var detail = detailProduitMapper.toDetailProduit(detailProduitRequest);
         var save = detailProduitRepositories.toSave(detail);
         return detailProduitMapper.toDetailProduitResponse(save);
     }

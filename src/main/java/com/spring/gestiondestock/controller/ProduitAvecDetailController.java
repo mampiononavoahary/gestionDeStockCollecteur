@@ -38,7 +38,7 @@ public class ProduitAvecDetailController {
         return produitAvecDetailRepositories.findProduitAvecDetailById(Integer.parseInt(id_produit_avec_detail));
     }
     @PostMapping
-    public ProduitAvecDetailResponse save(@RequestParam("image_url") MultipartFile image_url, @RequestParam("produitAndDetail") String produitAvecDetailJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
+    public ProduitAvecDetailResponse save( @RequestParam("produitAndDetail") String produitAvecDetailJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ProduitAndDetailWrapper produitAvecDetailRequest = objectMapper.readValue(produitAvecDetailJson, ProduitAndDetailWrapper.class);
 
@@ -54,7 +54,7 @@ public class ProduitAvecDetailController {
         }
 
         return produitAvecDetailService.createProduitAvecDetail(produitAvecDetailRequest.getProduit(),
-                produitAvecDetailRequest.getType_produit(), produitAvecDetailRequest.getDetailProduitRequest(), image_url);
+                produitAvecDetailRequest.getType_produit(), produitAvecDetailRequest.getDetailProduitRequest());
     }
 
 

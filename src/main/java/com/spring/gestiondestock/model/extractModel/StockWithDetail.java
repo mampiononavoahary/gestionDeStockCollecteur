@@ -20,5 +20,4 @@ public class StockWithDetail implements Serializable {
     private Unite unite;
     private String nom_detail;
     private String symbole;
-    private String image_url;
 }

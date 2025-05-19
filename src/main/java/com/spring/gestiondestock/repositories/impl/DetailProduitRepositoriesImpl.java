@@ -30,7 +30,6 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         Double prix_d_achat = resultSet.getDouble("prix_d_achat");
         Double prix_de_vente = resultSet.getDouble("prix_de_vente");
         String uniteStr = resultSet.getString("unite");
-        String image = resultSet.getString("image_url");
         List<ProduitAvecDetail> produitAvecDetails = new ArrayList<>();
         Unite unite = null;
         CategoryProduit categoryProduit = null;
@@ -38,7 +37,7 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
             unite = Unite.valueOf(uniteStr);
             categoryProduit = CategoryProduit.valueOf(categorie);
         }
-        return new DetailProduit(id, nom,symbol,categoryProduit, description, prix_d_achat, prix_de_vente,unite,image,produitAvecDetails);
+        return new DetailProduit(id, nom,symbol,categoryProduit, description, prix_d_achat, prix_de_vente,unite,produitAvecDetails);
     }
     @Override
     public List<DetailProduit> getDetailProduits() throws SQLException, ClassNotFoundException {
@@ -59,8 +58,8 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
 
     @Override
     public DetailProduit toSave(DetailProduit toSave) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO detail_produit (nom_detail,symbole,categorie_produit,description,prix_d_achat,prix_de_vente,unite,image_url) " +
-                "VALUES (?,?,CAST(? AS categorie_produit),?,?,?,CAST(? AS unite),?) RETURNING id_detail_produit;";
+        String sql = "INSERT INTO detail_produit (nom_detail,symbole,categorie_produit,description,prix_d_achat,prix_de_vente,unite) " +
+                "VALUES (?,?,CAST(? AS categorie_produit),?,?,?,CAST(? AS unite)) RETURNING id_detail_produit;";
         getConnection();
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -71,7 +70,6 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
             statement.setDouble(5, toSave.getPrix_d_achat());
             statement.setDouble(6, toSave.getPrix_de_vente());
             statement.setString(7, toSave.getUnite().name()); // Vérifie que cette valeur existe bien dans ENUM
-            statement.setString(8, toSave.getImage_url());
 
             ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {

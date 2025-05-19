@@ -25,14 +25,11 @@ public class DetailProduitController {
         return detailProduitService.getAllDetailProduit();
     }
     @PostMapping
-    public DetailProduitResponse addDetailProduit(@RequestParam("file") MultipartFile image_url,
-                                                  @RequestParam("registerRequest") String detailProduitRequestJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
+    public DetailProduitResponse addDetailProduit(@RequestParam("registerRequest") String detailProduitRequestJson) throws SQLException, ClassNotFoundException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         DetailProduitRequest detailProduitRequest = objectMapper.readValue(detailProduitRequestJson, DetailProduitRequest.class);
-        if (image_url.isEmpty() || detailProduitRequest == null) {
-            return null;
-        }
-        return detailProduitService.createDetailProduit(image_url, detailProduitRequest);
+
+        return detailProduitService.createDetailProduit(detailProduitRequest);
     }
     @PutMapping("/{id_detail}")
     public DetailProduitResponse updateDetailProduit(@RequestBody DetailProduit detailProduit) throws SQLException, ClassNotFoundException {

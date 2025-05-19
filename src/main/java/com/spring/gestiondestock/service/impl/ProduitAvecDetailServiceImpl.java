@@ -33,8 +33,8 @@ public class ProduitAvecDetailServiceImpl {
     }
 
 
-    public ProduitAvecDetailResponse createProduitAvecDetail(int produit, Integer type_produit, DetailProduitRequest detailProduitRequest, MultipartFile image_url) throws SQLException, ClassNotFoundException {
-        var detailProduit = detailProduitMapper.toDetailProduit(image_url, detailProduitRequest);
+    public ProduitAvecDetailResponse createProduitAvecDetail(int produit, Integer type_produit, DetailProduitRequest detailProduitRequest) throws SQLException, ClassNotFoundException {
+        var detailProduit = detailProduitMapper.toDetailProduit( detailProduitRequest);
         var saveDetailProduitRequest = detailProduitRepositories.toSave(detailProduit);
 
         ProduitAvecDetailRequest produitAvecDetailRequest = new ProduitAvecDetailRequest();

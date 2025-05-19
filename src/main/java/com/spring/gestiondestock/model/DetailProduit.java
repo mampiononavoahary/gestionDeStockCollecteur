@@ -24,6 +24,5 @@ public class DetailProduit implements Serializable {
     private Double prix_d_achat;
     private Double prix_de_vente;
     private Unite unite;
-    private String image_url;
     private List<ProduitAvecDetail> listProduitAvecDetail;
 }

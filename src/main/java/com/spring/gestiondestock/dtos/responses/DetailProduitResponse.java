@@ -21,6 +21,5 @@ public class DetailProduitResponse {
     private Double prix_d_achat;
     private Double prix_de_vente;
     private Unite unite;
-    private String image_url;
     List<ProduitAvecDetail> produit_avec_detail;
 }
