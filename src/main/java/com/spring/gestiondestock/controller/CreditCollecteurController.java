@@ -27,6 +27,10 @@ public class CreditCollecteurController {
     public CreditCollecteur saveCreditCollecteur(@RequestBody CreditCollecteur creditCollecteur) {
         return creditCollecteurService.saveCreditCollecteur(creditCollecteur);
     }
+    @PostMapping("/savewithreste")
+    public CreditCollecteur saveCreditCollecteurWithReste(@RequestBody CreditCollecteur creditCollecteur) {
+        return creditCollecteurService.saveCreditWithReste(creditCollecteur);
+    }
     @GetMapping("/{id}")
     public Optional<CreditCollecteur> findCreditCollecteurById(@PathVariable Long id) {
         return creditCollecteurService.findCreditCollecteurById(id);
