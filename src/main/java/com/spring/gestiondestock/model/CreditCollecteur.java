@@ -1,5 +1,7 @@
 package com.spring.gestiondestock.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,6 +10,7 @@ import lombok.experimental.Accessors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Random;
 
 @AllArgsConstructor
@@ -42,7 +45,11 @@ public class CreditCollecteur {
     @ManyToOne
     @JoinColumn(name = "id_collecteur")
     @JsonProperty("id_collecteur")
+    @JsonBackReference
     private Collecteur collecteur;
+
+    @OneToMany(mappedBy = "creditCollecteur", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<DebitCollecteur> debitCollecteurs;
 
     @PrePersist
     public void prePersist() {

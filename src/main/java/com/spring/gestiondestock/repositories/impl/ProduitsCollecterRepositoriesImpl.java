@@ -27,7 +27,7 @@ public class ProduitsCollecterRepositoriesImpl {
         ProduitsCollecter produitsCollecter = new ProduitsCollecter();
         produitsCollecter.setIdProduitCollecter(resultSet.getLong("id_produit_collecter"));
         produitsCollecter.setDebitCollecteur(DebitCollecteur.builder().idDebitCollecteur(resultSet.getLong("id_debit_collecteur")).build());
-        produitsCollecter.setProduitAvecDetail(ProduitAvecDetail.builder().id_produit_avec_detail(resultSet.getInt("id_produit_avec_detail")).build());
+        produitsCollecter.setProduitAvecDetail(ProduitAvecDetail.builder().id_produit_avec_detail(resultSet.getInt("id_produit_avec_detail")).build().getId_produit_avec_detail());
         produitsCollecter.setQuantite(resultSet.getDouble("quantite"));
         produitsCollecter.setUnite(Unite.valueOf(resultSet.getString("unite")));
         produitsCollecter.setPrix_unitaire(resultSet.getDouble("prix_unitaire"));
@@ -54,7 +54,7 @@ public class ProduitsCollecterRepositoriesImpl {
         String query = "INSERT INTO produits_collecter (id_debit_collecteur, id_produit_avec_detail, quantite, unite, prix_unitaire, lieu_stock) VALUES (?, ?, ?, CAST(? AS unite), ?, CAST(? AS lieu_de_transaction))";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, produitsCollecter.getDebitCollecteur().getIdDebitCollecteur());
-            preparedStatement.setInt(2, produitsCollecter.getProduitAvecDetail().getId_produit_avec_detail());
+            preparedStatement.setInt(2, produitsCollecter.getProduitAvecDetail());
             preparedStatement.setDouble(3, produitsCollecter.getQuantite());
             preparedStatement.setString(4, produitsCollecter.getUnite().toString());
             preparedStatement.setDouble(5, produitsCollecter.getPrix_unitaire());
@@ -63,6 +63,26 @@ public class ProduitsCollecterRepositoriesImpl {
             return produitsCollecter;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void updateProduitsCollecter(Double quantite, Unite unite, Double prix_unitaire, int id_produit_collecter) throws SQLException, ClassNotFoundException {
+        getConnection();
+        String query = "UPDATE produits_collecter SET quantite = ?, unite = ?::unite, prix_unitaire = ? WHERE id_produits_collecter = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDouble(1, quantite);
+            preparedStatement.setString(2, unite.toString());
+            preparedStatement.setDouble(3, prix_unitaire);
+            preparedStatement.setInt(4, id_produit_collecter);
+            int rows = preparedStatement.executeUpdate();
+            if (rows > 0) {
+                System.out.println("ProduitsCollecter updated successfully");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
     }
 }

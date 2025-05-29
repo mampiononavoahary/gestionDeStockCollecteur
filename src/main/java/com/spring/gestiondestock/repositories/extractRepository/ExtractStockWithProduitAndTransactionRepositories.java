@@ -77,6 +77,10 @@ public class ExtractStockWithProduitAndTransactionRepositories {
                 stockWithProduitAndTransactions.add(extract(resultSet));
             }
             return stockWithProduitAndTransactions;
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
     }
 }

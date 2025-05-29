@@ -47,6 +47,10 @@ public class ExtractFactureRepositories {
                 extractFacture.setLignes_facture(lignesFacture);
             } catch (Exception e) {
                 throw new SQLException("Erreur lors du parsing de lignes_facture : " + e.getMessage(), e);
+            }finally {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                }
             }
         }
         return extractFacture;

@@ -78,6 +78,7 @@ public class ExtractCreditsWithDebitsRepositories {
                 "                        'id_debit_collecteur', d.id_debit_collecteur,\n" +
                 "                        'date_de_debit',d.date_de_debit,\n" +
                 "                        'lieu_de_collection', d.lieu_de_collection,\n" +
+                "                        'depense', d.depense,\n" +
                 "                        'description', d.description,\n" +
                 "                        'produits_collecter_extract', COALESCE(prod.produits_collecter_extract, '[]')\n" +
                 "                )\n" +
@@ -174,6 +175,7 @@ public class ExtractCreditsWithDebitsRepositories {
                 "                        'id_debit_collecteur', d.id_debit_collecteur,\n" +
                 "                        'date_de_debit',d.date_de_debit,\n" +
                 "                        'lieu_de_collection', d.lieu_de_collection,\n" +
+                "                         'depense', d.depense,\n" +
                 "                        'description', d.description,\n" +
                 "                        'produits_collecter_extract', COALESCE(prod.produits_collecter_extract, '[]')\n" +
                 "                )\n" +

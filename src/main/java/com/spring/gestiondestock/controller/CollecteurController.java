@@ -39,6 +39,11 @@ public class CollecteurController {
         collecteurService.deleteCollecteur(id);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Collecteur> updateCollecteur(@PathVariable Long id, @RequestBody Collecteur collecteur) {
+        return collecteurService.updateCollecteur(id,collecteur);
+    }
+
     @GetMapping("/search")
     public List<Collecteur> searchByNom(@RequestParam String nom) {
         return collecteurService.searchCollecteursByNom(nom);

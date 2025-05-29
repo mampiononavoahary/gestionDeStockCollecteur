@@ -18,6 +18,7 @@ public class DebitsExtract {
     private int id_debit_collecteur;
     private LocalDateTime date_de_debit;
     private String lieu_de_collection;
+    private Double depense;
     private String description;
     List<ProduitsCollecterExtract> produits_collecter_extract;
 }

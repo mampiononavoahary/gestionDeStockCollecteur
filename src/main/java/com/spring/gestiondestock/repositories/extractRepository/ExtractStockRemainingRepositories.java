@@ -56,6 +56,10 @@ public class ExtractStockRemainingRepositories {
 
         }catch (Exception e){
             throw new SQLException(e.getMessage());
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
     }
 }

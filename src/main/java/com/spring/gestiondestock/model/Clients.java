@@ -18,7 +18,6 @@ import java.util.List;
 @ToString
 public class Clients implements Serializable {
 
-    // Annotation pour mapper "id_client" dans le JSON vers "id_clients"
     @JsonProperty("id_client")
     private int id_clients;
 
@@ -27,11 +26,10 @@ public class Clients implements Serializable {
     private String adresse;
     private String telephone;
 
-    // Ajout d'une annotation @JsonIgnore pour éviter les erreurs lors de la désérialisation
     @JsonIgnore
     private List<DetailTransaction> detailTransactions;
 
-    // Constructeur supplémentaire pour désérialiser uniquement l'id
+
     @JsonCreator
     public Clients(@JsonProperty("id_client") int id_clients) {
         this.id_clients = id_clients;

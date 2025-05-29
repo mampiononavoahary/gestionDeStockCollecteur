@@ -40,6 +40,7 @@ public class ProduitsCollecterServiceImpl {
         DebitCollecteur debitCollecteur1 = new DebitCollecteur();
         debitCollecteur1.setDateDeDebit(debitCollecteur.getDateDeDebit());
         debitCollecteur1.setLieuDeCollection(debitCollecteur.getLieuDeCollection());
+        debitCollecteur1.setDepense(debitCollecteur.getDepense());
         debitCollecteur1.setDescription(debitCollecteur.getDescription());
         debitCollecteur1.setCreditCollecteur(debitCollecteur.getCreditCollecteur());
 
@@ -95,4 +96,7 @@ public class ProduitsCollecterServiceImpl {
         return produitsCollecterResponses;
     }
 
+    public void updateProduitsCollecter(Double quantite, Unite unite, Double prix_unitaire, int id_produit_collecter) throws SQLException, ClassNotFoundException {
+        produitsCollecterRepositories.updateProduitsCollecter(quantite, unite, prix_unitaire, id_produit_collecter);
+    }
 }

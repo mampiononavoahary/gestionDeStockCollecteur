@@ -14,7 +14,7 @@ public class ProduitsCollecterMapper {
     public ProduitsCollecter toEntity(ProduitsCollecterRequest produitsCollecterRequest) {
         return ProduitsCollecter.builder()
                 .debitCollecteur(DebitCollecteur.builder().idDebitCollecteur(produitsCollecterRequest.getId_debit_collecter()).build())
-                .produitAvecDetail(ProduitAvecDetail.builder().id_produit_avec_detail(produitsCollecterRequest.getId_produit_avec_detail()).build())
+                .produitAvecDetail(ProduitAvecDetail.builder().id_produit_avec_detail(produitsCollecterRequest.getId_produit_avec_detail()).build().getId_produit_avec_detail())
                 .quantite(produitsCollecterRequest.getQuantite())
                 .unite(Unite.valueOf(produitsCollecterRequest.getUnite()))
                 .prix_unitaire(produitsCollecterRequest.getPrix_unitaire())
@@ -26,7 +26,7 @@ public class ProduitsCollecterMapper {
         return ProduitsCollecterResponse.builder()
                 .id_produit_collecter(produitsCollecter.getIdProduitCollecter())
                 .debitCollecteur(produitsCollecter.getDebitCollecteur())
-                .produitAvecDetail(produitsCollecter.getProduitAvecDetail())
+                .produitAvecDetail(ProduitAvecDetail.builder().id_produit_avec_detail(produitsCollecter.getProduitAvecDetail()).build())
                 .quantite(produitsCollecter.getQuantite())
                 .unite(produitsCollecter.getUnite())
                 .prix_unitaire(produitsCollecter.getPrix_unitaire())

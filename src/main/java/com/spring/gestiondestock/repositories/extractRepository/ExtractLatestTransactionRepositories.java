@@ -37,6 +37,10 @@ public class ExtractLatestTransactionRepositories {
             while (resultSet.next()) {
                 extractTransactions.add(extractLatestTransaction(resultSet));
             }
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return extractTransactions;
     }

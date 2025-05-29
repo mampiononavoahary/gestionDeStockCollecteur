@@ -1,11 +1,14 @@
 package com.spring.gestiondestock.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,11 +30,19 @@ public class DebitCollecteur {
     @Column(name = "lieu_de_collection")
     private String lieuDeCollection;
 
+    @Column(name = "depense")
+    private Double depense;
+
     @Column(name = "description")
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "id_credit_collecteur")
+    @JsonProperty("id_credit_collecteur")
+    @JsonBackReference
     private CreditCollecteur creditCollecteur;
+
+    @OneToMany(mappedBy = "debitCollecteur", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    List<ProduitsCollecter> produitsCollecters;
 
 }

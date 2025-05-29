@@ -43,6 +43,10 @@ public class ExtractStockWithDetailRepositories {
             while (resultSet.next()) {
                 stockWithDetails.add(extractStockWithDetail(resultSet));
             }
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return stockWithDetails;
     }
@@ -58,6 +62,10 @@ public class ExtractStockWithDetailRepositories {
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 return extractStockWithDetail(resultSet);
+            }
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return stockWithDetail;

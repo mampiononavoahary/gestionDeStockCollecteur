@@ -14,18 +14,17 @@ public class CorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://gestionofstock.vercel.app","http://localhost:3000")); // Autoriser l'origine spécifique
+        config.setAllowedOrigins(List.of("https://gestionofstock.vercel.app","http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type","Origin","Accept"));
-        config.setAllowCredentials(true);  // Autoriser les cookies / credentials
+        config.setAllowCredentials(true);
 
-        // Configurer les origines autorisées pour les cookies et les en-têtes
-        config.addAllowedOrigin("https://gestionofstock.vercel.app");  // Origine spécifique
+        config.addAllowedOrigin("https://gestionofstock.vercel.app");
         config.addAllowedHeader("Authorization");
         config.addAllowedHeader("Content-Type");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Appliquer la configuration CORS seulement sur /api/**
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
