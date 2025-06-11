@@ -9,6 +9,7 @@ import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.Stock;
 import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.model.enums.Unite;
+import com.spring.gestiondestock.repositories.InterfaceProduitsCollecter;
 import com.spring.gestiondestock.repositories.impl.ProduitAvecDetailRepositoriesImpl;
 import com.spring.gestiondestock.repositories.impl.ProduitsCollecterRepositoriesImpl;
 import com.spring.gestiondestock.repositories.impl.StockRepositoriesImpl;
@@ -26,14 +27,16 @@ public class ProduitsCollecterServiceImpl {
     private final StockRepositoriesImpl stockRepositories;
     private final ProduitAvecDetailRepositoriesImpl produitAvecDetailRepositories;
     private final ProduitsCollecterMapper produitsCollecterMapper;
+    private final InterfaceProduitsCollecter interfaceProduitsCollecter;
 
     @Autowired
-    public ProduitsCollecterServiceImpl(ProduitsCollecterRepositoriesImpl produitsCollecterRepositories, DebitCollecteurService debitCollecteurService, StockRepositoriesImpl stockRepositories, ProduitAvecDetailRepositoriesImpl produitAvecDetailRepositories, ProduitsCollecterMapper produitsCollecterMapper) {
+    public ProduitsCollecterServiceImpl(ProduitsCollecterRepositoriesImpl produitsCollecterRepositories, DebitCollecteurService debitCollecteurService, StockRepositoriesImpl stockRepositories, ProduitAvecDetailRepositoriesImpl produitAvecDetailRepositories, ProduitsCollecterMapper produitsCollecterMapper, InterfaceProduitsCollecter interfaceProduitsCollecter) {
         this.produitsCollecterRepositories = produitsCollecterRepositories;
         this.debitCollecteurService = debitCollecteurService;
         this.stockRepositories = stockRepositories;
         this.produitAvecDetailRepositories = produitAvecDetailRepositories;
         this.produitsCollecterMapper = produitsCollecterMapper;
+        this.interfaceProduitsCollecter = interfaceProduitsCollecter;
     }
 
     public List<ProduitsCollecterResponse> saveProduitsCollecter(List<ProduitsCollecterRequest> produitsCollecterRequests, DebitCollecteur debitCollecteur) throws SQLException, ClassNotFoundException {
@@ -97,6 +100,10 @@ public class ProduitsCollecterServiceImpl {
     }
 
     public void updateProduitsCollecter(Double quantite, Unite unite, Double prix_unitaire, int id_produit_collecter) throws SQLException, ClassNotFoundException {
-        produitsCollecterRepositories.updateProduitsCollecter(quantite, unite, prix_unitaire, id_produit_collecter);
+        produitsCollecterRepositories.updateProduitsCollecterEtMettreAJourCredit(quantite, unite, prix_unitaire, id_produit_collecter);
+    }
+
+    public void deleteProduitsCollecter(Long id){
+        interfaceProduitsCollecter.deleteById(id);
     }
 }

@@ -29,4 +29,8 @@ public class ProduitsCollecterController {
     public void updateProduitsCollecter(@PathVariable int id_produit_collecter, @RequestParam Double quantite, @RequestParam String unite, @RequestParam Double prix_unitaire) throws SQLException, ClassNotFoundException {
         produitsCollecterService.updateProduitsCollecter(quantite, Unite.valueOf(unite),prix_unitaire,id_produit_collecter);
     }
+    @DeleteMapping("/delete/{id_produit_collecter}")
+    public void deleteProduitsCollecter(@PathVariable Long id_produit_collecter) {
+        produitsCollecterService.deleteProduitsCollecter(id_produit_collecter);
+    }
 }

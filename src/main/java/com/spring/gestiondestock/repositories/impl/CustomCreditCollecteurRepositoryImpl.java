@@ -1,5 +1,6 @@
 package com.spring.gestiondestock.repositories.impl;
 
+import com.spring.gestiondestock.exceptions.ErrorException;
 import com.spring.gestiondestock.model.CreditCollecteur;
 import com.spring.gestiondestock.model.DebitCollecteur;
 import com.spring.gestiondestock.model.ProduitsCollecter;
@@ -22,9 +23,8 @@ public class CustomCreditCollecteurRepositoryImpl implements CustomCreditCollect
     public CreditCollecteur saveWithReste(CreditCollecteur newCredit) {
         Long idCollecteur = newCredit.getCollecteur().getIdCollecteur();
 
-        // 1. Récupère le dernier crédit
         List<CreditCollecteur> anciensCredits = entityManager.createQuery(
-                        "SELECT c FROM CreditCollecteur c WHERE c.collecteur.idCollecteur = :id ORDER BY c.dateDeCredit DESC",
+                        "SELECT c FROM CreditCollecteur c WHERE c.collecteur.idCollecteur = :id ORDER BY c.dateDeCredit DESC,c.idCreditCollecteur DESC",
                         CreditCollecteur.class
                 )
                 .setParameter("id", idCollecteur)
@@ -33,8 +33,10 @@ public class CustomCreditCollecteurRepositoryImpl implements CustomCreditCollect
 
         if (!anciensCredits.isEmpty()) {
             CreditCollecteur dernierCredit = anciensCredits.get(0);
-
-            // 2. Récupère tous les produits liés à ce crédit via les débits
+            if (newCredit.getDateDeCredit().isBefore(dernierCredit.getDateDeCredit())) {
+                throw new ErrorException("La date du nouveau crédit (" + newCredit.getDateDeCredit() +
+                        ") ne peut pas être antérieure à celle du dernier crédit (" + dernierCredit.getDateDeCredit() + ").");
+            }
             List<Object[]> rows = entityManager.createNativeQuery("""
                     SELECT pc.quantite, pc.prix_unitaire, pc.unite
                     FROM produits_collecter pc
@@ -57,9 +59,7 @@ public class CustomCreditCollecteurRepositoryImpl implements CustomCreditCollect
                 }
             }
 
-            // 4. Calcule le reste
             double reste = dernierCredit.getMontant() - totalDebit;
-            //5. Update status of last credit
             dernierCredit.setStatus(true);
             entityManager.merge(dernierCredit);
             if (reste > 0) {
@@ -67,7 +67,6 @@ public class CustomCreditCollecteurRepositoryImpl implements CustomCreditCollect
             }
         }
 
-        // 5. Persist le nouveau crédit
         entityManager.persist(newCredit);
         return newCredit;
     }

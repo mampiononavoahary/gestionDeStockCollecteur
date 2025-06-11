@@ -2,6 +2,7 @@ package com.spring.gestiondestock.repositories;
 
 import com.spring.gestiondestock.model.CreditCollecteur;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,5 +22,9 @@ public interface InterfaceCreditCollecteur extends JpaRepository<CreditCollecteu
     List<CreditCollecteur> findByCollecteur_IdCollecteur(Long idCollecteur);
 
     List<CreditCollecteur> findByReferanceCredit(String referanceCredit);
+
+    CreditCollecteur findTopByCollecteurIdCollecteurOrderByDateDeCreditDescIdCreditCollecteurDesc(Long idCollecteur);
+
+
 
 }

@@ -68,6 +68,7 @@ public class ExtractCreditsWithDebitsRepositories {
                 "                       'reste', cr.montant - COALESCE(total_data.total_debit, 0),\n" +
                 "                       'debit_extract', COALESCE(debit_data.debit_extract, '[]')\n" +
                 "               )\n" +
+                "       ORDER BY cr.date_de_credit DESC, cr.id_credit_collecteur DESC\n" +
                 "       ) AS credit_extract\n" +
                 "FROM credit_collecteur cr\n" +
                 "         LEFT JOIN (\n" +
@@ -165,6 +166,7 @@ public class ExtractCreditsWithDebitsRepositories {
                 "                       'reste', cr.montant - COALESCE(total_data.total_debit, 0),\n" +
                 "                       'debit_extract', COALESCE(debit_data.debit_extract, '[]')\n" +
                 "               )\n" +
+                "ORDER BY cr.date_de_credit DESC, cr.id_credit_collecteur DESC\n" +
                 "       ) AS credit_extract\n" +
                 "FROM credit_collecteur cr\n" +
                 "         LEFT JOIN (\n" +

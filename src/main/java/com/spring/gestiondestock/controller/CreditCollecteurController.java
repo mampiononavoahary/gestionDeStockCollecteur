@@ -3,6 +3,7 @@ package com.spring.gestiondestock.controller;
 import com.spring.gestiondestock.model.CreditCollecteur;
 import com.spring.gestiondestock.service.CreditCollecteurService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,5 +47,13 @@ public class CreditCollecteurController {
     @GetMapping("/ref")
     public List<CreditCollecteur> findCreditCollecteurByCollecteurRef(@RequestParam String referanceCredit) {
         return creditCollecteurService.findByReferanceCredit(referanceCredit);
+    }
+    @GetMapping("/lastcredit/{id_collecteur}")
+    public ResponseEntity<CreditCollecteur> findLastCreditCollecteurByCollecteurId(@PathVariable Long id_collecteur) {
+        CreditCollecteur creditCollecteur = creditCollecteurService.findTheLastCredit(id_collecteur);
+        if (creditCollecteur == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(creditCollecteur);
     }
 }

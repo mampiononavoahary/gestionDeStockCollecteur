@@ -1,12 +1,17 @@
 package com.spring.gestiondestock.repositories.impl;
 
 import com.spring.gestiondestock.db.Connect;
+import com.spring.gestiondestock.model.CreditCollecteur;
 import com.spring.gestiondestock.model.DebitCollecteur;
 import com.spring.gestiondestock.model.ProduitAvecDetail;
 import com.spring.gestiondestock.model.ProduitsCollecter;
 import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.model.enums.Unite;
+import com.spring.gestiondestock.repositories.InterfaceCreditCollecteur;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +23,15 @@ import java.util.List;
 @Repository
 public class ProduitsCollecterRepositoriesImpl {
     private static Connection connection;
+
+    private final InterfaceCreditCollecteur interfaceCreditCollecteur;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public ProduitsCollecterRepositoriesImpl(InterfaceCreditCollecteur interfaceCreditCollecteur) {
+        this.interfaceCreditCollecteur = interfaceCreditCollecteur;
+    }
 
     public static void getConnection() throws SQLException, ClassNotFoundException {
         Connect connect = new Connect();
@@ -65,24 +79,65 @@ public class ProduitsCollecterRepositoriesImpl {
             throw new RuntimeException(e);
         }
     }
-    public void updateProduitsCollecter(Double quantite, Unite unite, Double prix_unitaire, int id_produit_collecter) throws SQLException, ClassNotFoundException {
-        getConnection();
-        String query = "UPDATE produits_collecter SET quantite = ?, unite = ?::unite, prix_unitaire = ? WHERE id_produits_collecter = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setDouble(1, quantite);
-            preparedStatement.setString(2, unite.toString());
-            preparedStatement.setDouble(3, prix_unitaire);
-            preparedStatement.setInt(4, id_produit_collecter);
-            int rows = preparedStatement.executeUpdate();
-            if (rows > 0) {
-                System.out.println("ProduitsCollecter updated successfully");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+    private double calculMontant(double quantite, double prix, Unite unite) {
+        return "T".equals(unite.name()) ? quantite * 1000 * prix : quantite * prix;
     }
+
+    @Transactional
+    public void updateProduitsCollecterEtMettreAJourCredit(Double nouvelleQuantite, Unite nouvelleUnite, Double nouveauPrixUnitaire, int idProduitCollecter) {
+        ProduitsCollecter ancien = entityManager.find(ProduitsCollecter.class, idProduitCollecter);
+        if (ancien == null) {
+            throw new RuntimeException("Produit collecté introuvable avec ID: " + idProduitCollecter);
+        }
+
+        double ancienMontant = calculMontant(ancien.getQuantite(), ancien.getPrix_unitaire(), ancien.getUnite());
+        double nouveauMontant = calculMontant(nouvelleQuantite, nouveauPrixUnitaire, nouvelleUnite);
+        double delta = nouveauMontant - ancienMontant;
+
+        ancien.setQuantite(nouvelleQuantite);
+        ancien.setUnite(nouvelleUnite);
+        ancien.setPrix_unitaire(nouveauPrixUnitaire);
+        entityManager.merge(ancien);
+
+        DebitCollecteur debit = ancien.getDebitCollecteur();
+        if (debit == null || debit.getCreditCollecteur() == null) {
+            throw new RuntimeException("Débit ou crédit associé introuvable pour ce produit collecté.");
+        }
+
+        CreditCollecteur creditAssocie = debit.getCreditCollecteur();
+        Long idCollecteur = creditAssocie.getCollecteur().getIdCollecteur();
+
+        long nombreCreditsActifs = entityManager.createQuery("""
+        SELECT COUNT(c) FROM CreditCollecteur c
+        WHERE c.collecteur.idCollecteur = :idCollecteur
+    """, Long.class)
+                .setParameter("idCollecteur", idCollecteur)
+                .getSingleResult();
+
+        if (nombreCreditsActifs <= 1) {
+            System.out.println("Un seul crédit actif : aucun ajustement du montant nécessaire.");
+            return;
+        }
+
+        CreditCollecteur dernierActif = entityManager.createQuery("""
+        SELECT c FROM CreditCollecteur c
+        WHERE c.collecteur.idCollecteur = :idCollecteur AND c.status = false
+        ORDER BY c.dateDeCredit DESC
+    """, CreditCollecteur.class)
+                .setParameter("idCollecteur", idCollecteur)
+                .setMaxResults(1)
+                .getResultStream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Aucun crédit actif trouvé pour ce collecteur."));
+
+        double nouveauMontantCredit = dernierActif.getMontant() - delta;
+        if (nouveauMontantCredit < 0) {
+            throw new RuntimeException("Le crédit ne peut pas être négatif après la mise à jour.");
+        }
+
+        dernierActif.setMontant(nouveauMontantCredit);
+        entityManager.merge(dernierActif);
+    }
+
+
 }

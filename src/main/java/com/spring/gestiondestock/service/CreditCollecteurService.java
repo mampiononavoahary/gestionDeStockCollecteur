@@ -45,4 +45,7 @@ public class CreditCollecteurService {
     public List<CreditCollecteur> findByReferanceCredit(String referanceCredit) {
         return interfaceCreditCollecteur.findByReferanceCredit(referanceCredit);
     }
+    public CreditCollecteur findTheLastCredit(Long idCollecteur) {
+        return interfaceCreditCollecteur.findTopByCollecteurIdCollecteurOrderByDateDeCreditDescIdCreditCollecteurDesc(idCollecteur);
+    }
 }
