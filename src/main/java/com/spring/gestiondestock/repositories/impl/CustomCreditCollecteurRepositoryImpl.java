@@ -38,7 +38,7 @@ public class CustomCreditCollecteurRepositoryImpl implements CustomCreditCollect
                         ") ne peut pas être antérieure à celle du dernier crédit (" + dernierCredit.getDateDeCredit() + ").");
             }
             List<Object[]> rows = entityManager.createNativeQuery("""
-                    SELECT pc.quantite, pc.prix_unitaire, pc.unite
+                    SELECT pc.quantite, pc.prix_unitaire, pc.unite,d.depense
                     FROM produits_collecter pc
                     JOIN debit_collecteur d ON pc.id_debit_collecteur = d.id_debit_collecteur
                     WHERE d.id_credit_collecteur = ?
@@ -51,20 +51,25 @@ public class CustomCreditCollecteurRepositoryImpl implements CustomCreditCollect
                 double quantite = ((Number) row[0]).doubleValue();
                 double prix = ((Number) row[1]).doubleValue();
                 String unite = (String) row[2];
+                Double depense = ((Number) row[3]).doubleValue();
 
                 if ("T".equals(unite)) {
-                    totalDebit += quantite * 1000 * prix;
+                    totalDebit += quantite * 1000 * prix + depense;
                 } else {
-                    totalDebit += quantite * prix;
+                    totalDebit += quantite * prix + depense;
                 }
             }
 
-            double reste = dernierCredit.getMontant() - totalDebit;
+            double reste = (
+                    (dernierCredit.getRecentreste() != null ? dernierCredit.getRecentreste() : 0)
+                            + dernierCredit.getMontant()
+                            - totalDebit
+            );
+
             dernierCredit.setStatus(true);
             entityManager.merge(dernierCredit);
-            if (reste > 0) {
-                newCredit.setMontant(newCredit.getMontant() + reste);
-            }
+            newCredit.setMontant(newCredit.getMontant());
+            newCredit.setRecentreste(reste > 0 ? reste : 0.0);
         }
 
         entityManager.persist(newCredit);

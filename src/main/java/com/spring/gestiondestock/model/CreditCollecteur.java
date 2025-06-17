@@ -33,6 +33,9 @@ public class CreditCollecteur {
     @Column(name = "montant")
     private Double montant;
 
+    @Column(name = "recentreste")
+    private Double recentreste;
+
     @Column(name = "description")
     private String description;
 

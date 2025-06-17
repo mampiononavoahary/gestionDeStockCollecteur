@@ -21,6 +21,8 @@ public class CreditsExtract {
     private boolean status;
     private LocalDateTime date_de_credit;
     private Double montant_credit;
+    private Double recentreste;
+    private Double total_depense;
     private Double total_debit;
     private Double reste;
     List<DebitsExtract> debit_extract;
