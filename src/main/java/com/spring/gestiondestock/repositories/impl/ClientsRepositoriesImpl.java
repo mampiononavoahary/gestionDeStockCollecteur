@@ -17,17 +17,12 @@ import java.util.List;
 @Repository
 public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
 
-    private static Connection connection;
     private final ClientsMapper clientsMapper;
 
     public ClientsRepositoriesImpl(ClientsMapper clientsMapper) {
         this.clientsMapper = clientsMapper;
     }
 
-    private static void getConnection() throws ClassNotFoundException, SQLException {
-        Connect connect=new Connect();
-        connection = connect.CreateConnection();
-    }
     private Clients extractClients(ResultSet rs) throws SQLException {
         int id = rs.getInt("id_clients");
         String nom = rs.getString("nom");
@@ -42,8 +37,8 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     public List<Clients> findAll() throws SQLException, ClassNotFoundException {
         List<Clients> clients=new ArrayList<>();
         String sql = "select * from clients";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 clients.add(extractClients(resultSet));
@@ -59,9 +54,8 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     public List<Clients> saveAll(List<Clients> toSave) throws SQLException, ClassNotFoundException {
         List<Clients> clients = new ArrayList<>();
         String sql = "INSERT INTO clients (nom, prenom, adresse, telephone) VALUES (?,?,?,?);";
-        getConnection();
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             for (Clients client : toSave) {
                 ps.setString(1, client.getNom());
                 ps.setString(2, client.getPrenom());
@@ -86,8 +80,8 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     public List<Clients> findByName(String name) throws SQLException, ClassNotFoundException {
         List<Clients> clients=new ArrayList<>();
         String sql = "select * from clients where nom = ?";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, name);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
@@ -105,9 +99,9 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     @Override
     public Clients findById(int id_clietns) throws SQLException, ClassNotFoundException {
         String sql = "select * from clients where id_clients = ?";
-        getConnection();
         Clients clients = null;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id_clietns);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
@@ -123,8 +117,8 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     @Override
     public Clients save(Clients toSave) throws SQLException, ClassNotFoundException {
         String sql = "insert into clients(nom,prenom,adresse,telephone) values (?,?,?,?);";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, toSave.getNom());
             ps.setString(2, toSave.getPrenom());
             ps.setString(3, toSave.getAdresse());
@@ -142,8 +136,8 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     @Override
     public Clients update(Clients toUpdate) throws SQLException, ClassNotFoundException {
         String sql = "update clients set nom=?,prenom=?,adresse=?,telephone=? where id_clients=?";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, toUpdate.getNom());
             ps.setString(2, toUpdate.getPrenom());
             ps.setString(3, toUpdate.getAdresse());
@@ -163,8 +157,8 @@ public class ClientsRepositoriesImpl implements InterfaceClients<Clients> {
     public Clients delete(int id_clients) throws SQLException, ClassNotFoundException {
         String sql = "delete from clients where id_clients = ?;";
         Clients client = null;
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = new Connect().CreateConnection()) {
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1,id_clients);
             int resultSet = ps.executeUpdate();
             if (resultSet > 0) {

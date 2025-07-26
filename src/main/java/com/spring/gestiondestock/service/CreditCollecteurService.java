@@ -28,8 +28,6 @@ public class CreditCollecteurService {
     }
     public CreditCollecteur saveCreditWithReste(CreditCollecteur creditCollecteur) {
         return customRepo.saveWithReste(creditCollecteur);
-        // Update status of last credit to true
-
     }
 
     public void deleteCreditCollecteur(Long id) {

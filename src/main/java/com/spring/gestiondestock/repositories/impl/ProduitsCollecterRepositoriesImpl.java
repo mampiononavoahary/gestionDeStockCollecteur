@@ -130,12 +130,12 @@ public class ProduitsCollecterRepositoriesImpl {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Aucun crédit actif trouvé pour ce collecteur."));
 
-        double nouveauMontantCredit = dernierActif.getMontant() - delta;
+        double nouveauMontantCredit = dernierActif.getRecentreste() - delta;
         if (nouveauMontantCredit < 0) {
             throw new RuntimeException("Le crédit ne peut pas être négatif après la mise à jour.");
         }
 
-        dernierActif.setMontant(nouveauMontantCredit);
+        dernierActif.setRecentreste(nouveauMontantCredit);
         entityManager.merge(dernierActif);
     }
 
