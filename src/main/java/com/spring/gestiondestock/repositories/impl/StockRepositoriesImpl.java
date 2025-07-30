@@ -41,6 +41,14 @@ public class StockRepositoriesImpl {
                 return extractStock(resultSet);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return null;
     }
     public Stock findByLieuAndProduit(String lieu,int produit) throws SQLException, ClassNotFoundException {
@@ -54,6 +62,14 @@ public class StockRepositoriesImpl {
                 return extractStock(resultSet);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return null;
     }
     public Stock findByLieuAndNameProduct(String lieu,String produit) throws SQLException, ClassNotFoundException {
@@ -65,6 +81,14 @@ public class StockRepositoriesImpl {
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()){
                 return extractStock(resultSet);
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return null;
@@ -83,6 +107,14 @@ public class StockRepositoriesImpl {
                 log.info("Stock saved successfuly");
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return stock;
     }
     public Double updateQuantiteStock(Double quantite,int id) throws SQLException, ClassNotFoundException {
@@ -95,6 +127,14 @@ public class StockRepositoriesImpl {
             int rows = ps.executeUpdate();
             if (rows >0){
                 log.info("Stock updated successfuly");
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return quantite;
