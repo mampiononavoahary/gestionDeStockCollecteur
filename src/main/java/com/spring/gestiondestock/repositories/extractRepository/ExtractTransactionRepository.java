@@ -195,6 +195,10 @@ public class ExtractTransactionRepository {
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
             throw e;
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
 
         return extractTransactions;

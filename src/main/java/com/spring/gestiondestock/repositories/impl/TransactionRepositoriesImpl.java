@@ -7,6 +7,8 @@ import com.spring.gestiondestock.model.Transaction;
 import com.spring.gestiondestock.model.enums.LieuDeTransaction;
 import com.spring.gestiondestock.model.enums.Status;
 import com.spring.gestiondestock.model.enums.Unite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Repository
 public class TransactionRepositoriesImpl {
+    private static final Logger log = LoggerFactory.getLogger(StockRepositoriesImpl.class);
     private static Connection connection;
     public void getConnection() throws SQLException, ClassNotFoundException {
         Connect connect = new Connect();
@@ -55,6 +58,13 @@ public class TransactionRepositoriesImpl {
                     transactionList.add(transaction);
                 }
             }
+        }catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return transactionList;
     }
@@ -75,6 +85,14 @@ public class TransactionRepositoriesImpl {
                 System.out.println("Save transaction successful");
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return transaction;
     }
     public Transaction deleteTransaction(int id_transaction)  throws SQLException, ClassNotFoundException {
@@ -87,6 +105,13 @@ public class TransactionRepositoriesImpl {
         if (rows == 1) {
           System.out.println("Transaction deleted");
         } 
+      }catch (SQLException e) {
+        log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+        throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+      } finally {
+        if (connection != null && !connection.isClosed()) {
+          connection.close();
+        }
       }      
       return transaction;
     }
@@ -103,6 +128,11 @@ public class TransactionRepositoriesImpl {
         } catch (SQLException e) {
             throw new SQLException("Erreur lors de la récupération de la transaction avec ID " + id_transaction, e);
         }
+        finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return transaction;
     }
     public void updateStatusTransaction(int id_transaction,String status) throws SQLException, ClassNotFoundException {
@@ -114,6 +144,14 @@ public class TransactionRepositoriesImpl {
         int rows = prepareStatement.executeUpdate();
         if (rows == 1) {
           System.out.println("Transaction updated");
+        }
+      }
+      catch (SQLException e) {
+        log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+        throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+      } finally {
+        if (connection != null && !connection.isClosed()) {
+          connection.close();
         }
       }
     }

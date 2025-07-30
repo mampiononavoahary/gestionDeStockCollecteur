@@ -114,6 +114,12 @@ public class ExtractFactureRepositories {
       }
             return extractFactures;
 
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
     }
 }

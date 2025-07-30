@@ -48,6 +48,13 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
                 System.out.println(user);
             }
         }
+        catch (SQLException e) {
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return users;
     }
 
@@ -83,6 +90,11 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
             }
         }catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return null; // Retourne null si aucun utilisateur trouvé
     }

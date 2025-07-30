@@ -51,6 +51,13 @@ public class PicSumBuyRepository {
             }
         }catch (SQLException e){
             e.printStackTrace();
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
+        if (picSumBuyList.isEmpty()) {
+            throw new SQLException("No data found for the given query.");
         }
         return picSumBuyList;
     }

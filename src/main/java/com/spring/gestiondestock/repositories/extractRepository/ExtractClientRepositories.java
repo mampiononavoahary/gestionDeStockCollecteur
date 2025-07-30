@@ -113,6 +113,10 @@ public class ExtractClientRepositories {
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
+    }finally {
+      if (connection != null && !connection.isClosed()) {
+        connection.close();
+      }
     }
     return extractClients;
   }

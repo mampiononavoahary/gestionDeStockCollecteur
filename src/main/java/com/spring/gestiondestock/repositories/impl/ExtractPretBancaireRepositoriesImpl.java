@@ -42,5 +42,13 @@ public class ExtractPretBancaireRepositoriesImpl {
             }
             return pret;
         }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
     }
 }

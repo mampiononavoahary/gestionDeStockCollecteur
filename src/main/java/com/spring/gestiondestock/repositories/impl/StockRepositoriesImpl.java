@@ -113,6 +113,14 @@ public class StockRepositoriesImpl {
                 log.info("Stock creer avec succes");
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return toSave;
     }
 }

@@ -5,6 +5,7 @@ import com.spring.gestiondestock.repositories.InterfaceCollecteur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,18 +18,27 @@ public class CollecteurService {
     public CollecteurService(InterfaceCollecteur collectuerRepository) {
         this.collectuerRepository = collectuerRepository;
     }
+    @Transactional
     public List<Collecteur> findAllCollecteur(){
         return collectuerRepository.findAll();
     }
+
+    @Transactional
     public Optional<Collecteur> findById(Long id){
         return collectuerRepository.findById(id);
     }
+
+    @Transactional
     public Collecteur saveCollecteur(Collecteur collecteur){
         return collectuerRepository.save(collecteur);
     }
+
+    @Transactional
     public void deleteCollecteur(Long id){
         collectuerRepository.deleteById(id);
     }
+
+    @Transactional
     public ResponseEntity<Collecteur> updateCollecteur(Long id, Collecteur updatedData) {
         Optional<Collecteur> optionalCollecteur = collectuerRepository.findById(id);
         if (optionalCollecteur.isEmpty()) {
@@ -46,6 +56,8 @@ public class CollecteurService {
 
         return ResponseEntity.ok(saved);
     }
+
+    @Transactional
     public List<Collecteur> searchCollecteursByNom(String nom) {
         return collectuerRepository.searchByNom(nom);
     }

@@ -52,6 +52,13 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
             for (DetailProduit detailProduit : detailProduits) {
                 System.out.println(detailProduit);
             }
+        }catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return detailProduits;
     }
@@ -81,7 +88,12 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
                 }
         }catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
+        log.info("DetailProduit saved: {}", toSave);
         return toSave;
     }
 
@@ -103,6 +115,18 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
                 return toUpdate;
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de la mise à jour du produit : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la mise à jour du produit : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
+        log.info("DetailProduit updated: {}", toUpdate);
+        if (toUpdate.getId_detail_produit() == 0) {
+            throw new SQLException("Aucun produit trouvé avec l'ID: " + toUpdate.getId_detail_produit());
+        }
         return toUpdate;
     }
 
@@ -116,6 +140,13 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
             int rows = statement.executeUpdate();
             if (rows > 0) {
                 log.info("detail produi with idt: {} deleted", id_detail_produit);
+            }
+        } catch (SQLException e) {
+            log.error("Erreur lors de la suppression du produit : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la suppression du produit : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return detailProduit;
@@ -132,6 +163,13 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
             while (resultSet.next()) {
                 detailProduit = extractDetail(resultSet);
                 System.out.println(detailProduit);
+            }
+        }catch (SQLException e) {
+            log.error("Erreur lors de la récupération du produit : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la récupération du produit : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return detailProduit;

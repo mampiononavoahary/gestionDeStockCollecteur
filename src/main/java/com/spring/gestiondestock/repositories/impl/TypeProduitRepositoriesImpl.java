@@ -36,6 +36,13 @@ public class TypeProduitRepositoriesImpl implements InterfaceTypeProduit <TypePr
             }
             return listTypeProduit;
         }
+        catch (SQLException e) {
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
     }
 
     @Override
@@ -46,6 +53,13 @@ public class TypeProduitRepositoriesImpl implements InterfaceTypeProduit <TypePr
             preparedStatement.setString(1, toSave.getNom_type_produit());
             preparedStatement.setString(2, toSave.getSymbole());
             preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return toSave;
     }

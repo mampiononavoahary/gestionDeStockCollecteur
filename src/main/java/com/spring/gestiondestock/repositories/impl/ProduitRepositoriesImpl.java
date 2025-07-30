@@ -42,6 +42,14 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
                 System.out.println(produit);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return produits;
     }
 
@@ -55,6 +63,14 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 return extractProduitFromResultSet(rs);
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return produit;
@@ -77,6 +93,10 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
             }
         }catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return produit;
     }
@@ -93,6 +113,14 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
             int rows = ps.executeUpdate();
             if (rows == 1) {
                 log.info("produit with id : {} updated",id_produit);
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return produit;
@@ -112,6 +140,13 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
                     log.info("product saved");
                 }
             }
+        }catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return produitList;
     }
@@ -128,6 +163,14 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
                 return extractProduitFromResultSet(rs);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return produit;
     }
 
@@ -141,6 +184,14 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
             int rows = ps.executeUpdate();
             if (rows == 1) {
                 log.info("product with id : {} deleted",id_produit);
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return produit;

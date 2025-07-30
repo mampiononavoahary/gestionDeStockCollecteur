@@ -45,6 +45,14 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
                 System.out.println(produit);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return listProduitAvecDetail;
     }
 
@@ -66,6 +74,14 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
                 }
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return listProduitAvecDetail;
     }
 
@@ -83,6 +99,14 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
                 log.info("produit_avec_detail updated: {}", rows);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de la mise à jour du produit : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la mise à jour du produit : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return toUpdate;
     }
 
@@ -96,6 +120,13 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return extract(resultSet);
+            }
+        }catch (SQLException e) {
+            log.error("Erreur lors de la récupération du produit avec détail : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la récupération du produit avec détail : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return produitAvecDetail;
@@ -111,6 +142,13 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
             int rows = preparedStatement.executeUpdate();
             if (rows > 0) {
                 log.info("produit_avec_detail with id {} deleted", id);
+            }
+        }catch (SQLException e) {
+            log.error("Erreur lors de la suppression du produit avec détail : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la suppression du produit avec détail : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return produitAvecDetail;
@@ -137,6 +175,14 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
                 log.info("produit_avec_detail saved: {}", rows);
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return toSave;
     }
 
@@ -159,6 +205,14 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
                 listProduitWitDetail.add(extractProduitWitDetail(resultSet));
             }
         }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return listProduitWitDetail;
     }
     public ProduitAvecDetail findByName(String name) throws SQLException, ClassNotFoundException {
@@ -170,6 +224,14 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return extract(resultSet);
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de la récupération du produit avec détail par nom : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la récupération du produit avec détail par nom : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return produitAvecDetail;

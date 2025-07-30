@@ -21,5 +21,5 @@ public class GestionDeStockApplication {
 
         SpringApplication.run(GestionDeStockApplication.class, args);
     }
-
+    
 }

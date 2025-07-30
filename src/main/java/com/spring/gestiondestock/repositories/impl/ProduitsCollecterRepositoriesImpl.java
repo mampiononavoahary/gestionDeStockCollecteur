@@ -61,6 +61,10 @@ public class ProduitsCollecterRepositoriesImpl {
             return produitsCollecters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
     }
     public ProduitsCollecter createProduitsCollecter(ProduitsCollecter produitsCollecter) throws SQLException, ClassNotFoundException {
@@ -77,6 +81,10 @@ public class ProduitsCollecterRepositoriesImpl {
             return produitsCollecter;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
     }
     private double calculMontant(double quantite, double prix, Unite unite) {

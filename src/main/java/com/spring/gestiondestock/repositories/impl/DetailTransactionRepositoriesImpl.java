@@ -44,6 +44,13 @@ public class DetailTransactionRepositoriesImpl {
             while (resultSet.next()) {
                 detailTransactions.add(extractDetailTransaction(resultSet));
             }
+        }catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
         }
         return detailTransactions;
     }
@@ -67,6 +74,11 @@ public class DetailTransactionRepositoriesImpl {
         }catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }
         return detailTransaction;
     }
     public DetailTransaction findById(int id) throws SQLException, ClassNotFoundException {
@@ -78,6 +90,13 @@ public class DetailTransactionRepositoriesImpl {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 detailTransaction = extractDetailTransaction(resultSet);
+            }
+        }catch (SQLException e) {
+            log.error("Erreur lors de la récupération du détail de transaction : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la récupération du détail de transaction : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return detailTransaction;
@@ -91,6 +110,14 @@ public class DetailTransactionRepositoriesImpl {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 detailTransaction = extractDetailTransaction(resultSet);
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de la récupération du détail de transaction par type : {}", e.getMessage());
+            throw new SQLException("Erreur lors de la récupération du détail de transaction par type : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
         return detailTransaction;
@@ -111,6 +138,14 @@ public class DetailTransactionRepositoriesImpl {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 detail.add(extractDetailTransaction2(resultSet));
+            }
+        }
+        catch (SQLException e) {
+            log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
+            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
+        } finally {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
         }
       return detail;
