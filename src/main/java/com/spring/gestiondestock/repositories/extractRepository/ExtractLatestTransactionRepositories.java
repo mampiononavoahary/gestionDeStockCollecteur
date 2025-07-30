@@ -12,12 +12,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractLatestTransactionRepositories {
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource;
+    
+    public ExtractLatestTransactionRepositories(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public List<ExtractLatestTransaction> getLatestTransactions() throws SQLException, ClassNotFoundException {
@@ -31,15 +34,12 @@ public class ExtractLatestTransactionRepositories {
                 "ON pd.id_produit_avec_detail=t.id_produit_avec_detail\n" +
                 "INNER JOIN detail_produit dp\n" +
                 "ON dp.id_detail_produit=pd.id_detail_produit ORDER BY date_de_transaction DESC LIMIT 3;";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 extractTransactions.add(extractLatestTransaction(resultSet));
-            }
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
             }
         }
         return extractTransactions;

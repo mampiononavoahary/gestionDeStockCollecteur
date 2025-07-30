@@ -17,12 +17,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractFactureRepositories {
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource;
+    
+    public ExtractFactureRepositories(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     private ExtractFacture extractFacture(ResultSet rs) throws SQLException {
         ExtractFacture extractFacture = new ExtractFacture();
@@ -47,10 +50,6 @@ public class ExtractFactureRepositories {
                 extractFacture.setLignes_facture(lignesFacture);
             } catch (Exception e) {
                 throw new SQLException("Erreur lors du parsing de lignes_facture : " + e.getMessage(), e);
-            }finally {
-                if (connection != null && !connection.isClosed()) {
-                    connection.close();
-                }
             }
         }
         return extractFacture;
@@ -103,8 +102,9 @@ public class ExtractFactureRepositories {
                 "    dt.date_de_transaction DESC;";
 
         List<ExtractFacture> extractFactures = new ArrayList<>();
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+            Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 extractFactures.add(extractFacture(rs));
@@ -116,10 +116,6 @@ public class ExtractFactureRepositories {
 
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
-    }
+     }
 }

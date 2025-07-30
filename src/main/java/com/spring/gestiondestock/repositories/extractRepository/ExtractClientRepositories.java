@@ -13,12 +13,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractClientRepositories {
   private static Connection connection;
-  public void getConnection()throws SQLException, ClassNotFoundException {
-    Connect connect = new Connect();
-    connection = connect.CreateConnection();
+  
+  private final DataSource dataSource;
+  public ExtractClientRepositories(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
   private ExtractClients extractClients(ResultSet resultSet) throws SQLException {
     int id_client = resultSet.getInt("id_client");
@@ -102,8 +105,9 @@ public class ExtractClientRepositories {
                         LIMIT 6 OFFSET ?;
                         
         """;
-    getConnection();
-    try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+    try(
+    Connection connection = dataSource.getConnection();     
+    PreparedStatement preparedStatement = connection.prepareStatement(sql)){
       preparedStatement.setString(1, "%" + query + "%");
       preparedStatement.setString(2, "%" + query + "%");
       preparedStatement.setInt(3, (currentPage - 1) * 6);
@@ -113,10 +117,6 @@ public class ExtractClientRepositories {
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
-    }finally {
-      if (connection != null && !connection.isClosed()) {
-        connection.close();
-      }
     }
     return extractClients;
   }

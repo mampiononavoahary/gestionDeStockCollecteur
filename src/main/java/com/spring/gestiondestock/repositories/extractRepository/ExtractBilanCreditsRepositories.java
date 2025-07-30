@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.gestiondestock.db.Connect;
 import com.spring.gestiondestock.model.extractModel.ExtractBilanCreditsCollecteur;
 import com.spring.gestiondestock.model.extractModel.ExtractBilanProduitsCollecter;
 import org.springframework.stereotype.Repository;
@@ -12,13 +11,15 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractBilanCreditsRepositories {
     private static Connection connection;
 
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource; 
+    public ExtractBilanCreditsRepositories(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     private ExtractBilanCreditsCollecteur extractResultset(ResultSet resultSet) throws SQLException {
@@ -97,8 +98,10 @@ public class ExtractBilanCreditsRepositories {
                 "    COALESCE(pj.produits, '[]'::json) AS produits\n" +
                 "FROM credits cr\n" +
                 "         LEFT JOIN produits_json pj ON pj.id_collecteur = cr.id_collecteur;";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        
+        try (
+        Connection connection = dataSource.getConnection();    
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             int paramIndex = 1;
             if (startDate != null && endDate != null) {
                 preparedStatement.setDate(paramIndex++, startDate);
@@ -117,9 +120,7 @@ public class ExtractBilanCreditsRepositories {
             return extractBilanCreditsCollecteurs;
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            connection.close();
-        }
+        } 
     }
 
 }

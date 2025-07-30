@@ -8,16 +8,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractTransactionRepository {
     private static Connection connection;
 
-    private static void getConnection() throws SQLException, ClassNotFoundException {
-        if (connection == null || connection.isClosed()) {
-            Connect connect = new Connect();
-            connection = connect.CreateConnection();
-        }
-    }
+    private final DataSource dataSource;
+    public ExtractTransactionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
 
     private ExtractTransaction extractTransaction(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_transaction");
@@ -65,9 +65,10 @@ public class ExtractTransactionRepository {
 
         int offset = (currentPage - 1) * 6;
 
-        getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, "%" + query + "%");
             preparedStatement.setString(2, "%" + query + "%");
             preparedStatement.setString(3, "%" + query + "%");
@@ -81,12 +82,7 @@ public class ExtractTransactionRepository {
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
             throw e;
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
-
         return extractTransactions;
     }
     public List<ExtractTransaction> findFilteredTransactionsVente(String query, int currentPage) throws SQLException, ClassNotFoundException {
@@ -124,9 +120,10 @@ public class ExtractTransactionRepository {
 
         int offset = (currentPage - 1) * 6;
 
-        getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, "%" + query + "%");
             preparedStatement.setString(2, "%" + query + "%");
             preparedStatement.setString(3, "%" + query + "%");
@@ -179,9 +176,10 @@ public class ExtractTransactionRepository {
 
         int offset = (currentPage - 1) * 6;
 
-        getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+           Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, "%" + query + "%");
             preparedStatement.setString(2, "%" + query + "%");
             preparedStatement.setString(3, "%" + query + "%");
@@ -195,12 +193,7 @@ public class ExtractTransactionRepository {
         } catch (SQLException e) {
             System.err.println("Erreur lors de l'exécution de la requête : " + e.getMessage());
             throw e;
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
-
         return extractTransactions;
     }
  
@@ -225,9 +218,10 @@ public class ExtractTransactionRepository {
                 t.status::TEXT ILIKE ?
         """;
 
-        getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, "%" + query + "%");
             preparedStatement.setString(2, "%" + query + "%");
             preparedStatement.setString(3, "%" + query + "%");

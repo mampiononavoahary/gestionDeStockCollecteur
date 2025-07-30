@@ -13,13 +13,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 @Slf4j
 public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
     private static Connection connection;
-    private static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource;
+public ProduitRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     private Produit extractProduitFromResultSet(ResultSet resultSet) throws SQLException {
@@ -32,8 +34,9 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
     public List<Produit> getProduits() throws SQLException, ClassNotFoundException {
         List<Produit> produits = new ArrayList<>();
         String sql = "SELECT * FROM produit";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+         Connection connection = dataSource.getConnection();       
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 produits.add(extractProduitFromResultSet(rs));
@@ -45,20 +48,17 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return produits;
     }
 
     @Override
     public Produit getProduit(int id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM produit WHERE id_produit=?;";
-        getConnection();
         Produit produit = null;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+       Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -68,19 +68,15 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-        return produit;
+        }         return produit;
     }
 
     @Override
     public Produit createProduit(Produit produit) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO produit (nom_produit) VALUES (?) RETURNING id_produit;";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, produit.getNom_produit());
 
             // Utilise executeQuery() ici aussi
@@ -93,10 +89,6 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
             }
         }catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
         return produit;
     }
@@ -106,8 +98,9 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
     @Override
     public Produit updateProduit(Produit produit, int id_produit) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE produit SET nom_produit=? WHERE id_produit=?;";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, produit.getNom_produit());
             ps.setInt(2, id_produit);
             int rows = ps.executeUpdate();
@@ -118,11 +111,7 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return produit;
     }
 
@@ -130,8 +119,9 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
     public List<Produit> createProduits(List<Produit> produits) throws SQLException, ClassNotFoundException {
         List<Produit> produitList = new ArrayList<>();
         String sql = "INSERT INTO produit (nom_produit) VALUES (?);";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             for (Produit produit : produits) {
                 ps.setString(1, produit.getNom_produit());
                 int rows = ps.executeUpdate();
@@ -143,20 +133,17 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
         }catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return produitList;
     }
 
     @Override
     public Produit getProduitByName(String nom_produit) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM produit WHERE nom_produit=?;";
-        getConnection();
         Produit produit = null;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, nom_produit);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -166,20 +153,17 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return produit;
     }
 
     @Override
     public Produit deleteProduit(int id_produit) throws SQLException, ClassNotFoundException {
         String sql = "DELETE FROM produit WHERE id_produit=?;";
-        getConnection();
         Produit produit = null;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_produit);
             int rows = ps.executeUpdate();
             if (rows == 1) {
@@ -189,11 +173,7 @@ public class ProduitRepositoriesImpl implements InterfacecProduit<Produit> {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return produit;
     }
 }

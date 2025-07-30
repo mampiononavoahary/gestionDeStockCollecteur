@@ -9,13 +9,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractPretBancaireRepositoriesImpl {
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
+    private final DataSource dataSource;
+    public ExtractPretBancaireRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
     private ExtractPretBancaire ExtractPret(ResultSet rs) throws SQLException {
         ExtractPretBancaire pretBancaireResponse = new ExtractPretBancaire();
         pretBancaireResponse.setId_pret_bancaire(rs.getInt("id_pret_bancaire"));
@@ -33,9 +35,10 @@ public class ExtractPretBancaireRepositoriesImpl {
     }
     public List<ExtractPretBancaire> allPret() throws SQLException, ClassNotFoundException {
         String sql = "select p.nom_produit,pb.* from pret_bancaire pb inner join produit p on p.id_produit = pb.produit;";
-        getConnection();
         List<ExtractPretBancaire> pret = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 pret.add(ExtractPret(resultSet));
@@ -45,10 +48,6 @@ public class ExtractPretBancaireRepositoriesImpl {
         catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
     }
 }

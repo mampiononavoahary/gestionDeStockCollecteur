@@ -12,12 +12,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractCreditsWithDebitsRepositories {
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource; 
+    public ExtractCreditsWithDebitsRepositories(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     private CreditsExtract creditsExtract(ResultSet rs) throws SQLException {
         CreditsExtract creditsExtract = new CreditsExtract();
@@ -129,8 +131,9 @@ public class ExtractCreditsWithDebitsRepositories {
                 ") AS depense_data ON cr.id_credit_collecteur = depense_data.id_credit_collecteur\n" +
                 "WHERE cr.id_collecteur = ?;";
         List<CreditsExtract> creditsExtracts = new ArrayList<>();
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)){
             statement.setInt(1,id_collecteur);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -156,10 +159,6 @@ public class ExtractCreditsWithDebitsRepositories {
             return creditsExtracts;
         }catch (SQLException e) {
             throw new RuntimeException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
     }
     public List<CreditsExtract> getCreditsWithDebitNoId() throws SQLException, ClassNotFoundException {
@@ -235,8 +234,9 @@ public class ExtractCreditsWithDebitsRepositories {
                 "    GROUP BY id_credit_collecteur\n" +
                 ") AS depense_data ON cr.id_credit_collecteur = depense_data.id_credit_collecteur;";
         List<CreditsExtract> creditsExtracts = new ArrayList<>();
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)){
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 String jsonArray = resultSet.getString("credit_extract");

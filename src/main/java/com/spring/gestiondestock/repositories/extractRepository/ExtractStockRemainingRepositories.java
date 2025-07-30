@@ -15,12 +15,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractStockRemainingRepositories {
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-     Connect connect = new Connect();
-     connection = connect.CreateConnection();
+    private final DataSource dataSource; 
+
+    public ExtractStockRemainingRepositories(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     private ExtractStockRemaining extractStockRemaining(ResultSet resultSet) throws SQLException {
         ExtractStockRemaining extractStockRemaining = new ExtractStockRemaining();
@@ -45,8 +48,9 @@ public class ExtractStockRemainingRepositories {
         String sql = "select s.lieu_stock,JSON_AGG(JSON_BUILD_OBJECT('quantite',s.quantite_stock,'unite',s.unite,'produit',dp.nom_detail))AS ligne_stock from stock s inner join " +
                 "produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail inner join detail_produit dp on " +
                 "dp.id_detail_produit = pdt.id_detail_produit GROUP BY s.lieu_stock;\n";
-        getConnection();
-        try (PreparedStatement stm = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement stm = connection.prepareStatement(sql)){
             ResultSet resultSet = stm.executeQuery();
             List<ExtractStockRemaining> extractStockRemainings = new java.util.ArrayList<>();
             while (resultSet.next()) {
@@ -56,10 +60,6 @@ public class ExtractStockRemainingRepositories {
 
         }catch (Exception e){
             throw new SQLException(e.getMessage());
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
     }
 }

@@ -13,15 +13,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 @Slf4j
 public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<DetailProduit> {
     private static Connection connection;
-    private static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
-    private DetailProduit extractDetail(ResultSet resultSet) throws SQLException {
+   private final DataSource dataSource;
+
+   public DetailProduitRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
+    
+   private DetailProduit extractDetail(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_detail_produit");
         String nom = resultSet.getString("nom_detail");
         String symbol = resultSet.getString("symbole");
@@ -43,8 +47,9 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
     public List<DetailProduit> getDetailProduits() throws SQLException, ClassNotFoundException {
         List<DetailProduit> detailProduits = new ArrayList<>();
         String sql = "SELECT * FROM detail_produit";
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 detailProduits.add(extractDetail(resultSet));
@@ -55,21 +60,18 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         }catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-        return detailProduits;
+        } 
+            return detailProduits;
     }
 
     @Override
     public DetailProduit toSave(DetailProduit toSave) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO detail_produit (nom_detail,symbole,categorie_produit,description,prix_d_achat,prix_de_vente,unite) " +
                 "VALUES (?,?,CAST(? AS categorie_produit),?,?,?,CAST(? AS unite)) RETURNING id_detail_produit;";
-        getConnection();
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, toSave.getNom_detail());
             statement.setString(2, toSave.getSymbole());
             statement.setString(3, toSave.getCategorie_produit().name());
@@ -88,10 +90,6 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
                 }
         }catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
         log.info("DetailProduit saved: {}", toSave);
         return toSave;
@@ -101,8 +99,9 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
     @Override
     public DetailProduit toUpdate(DetailProduit toUpdate) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE detail_produit SET nom_detail=?,description=?,prix_d_achat=?,prix_de_vente=? WHERE id_detail_produit=?";
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1,toUpdate.getNom_detail());
             statement.setString(2,toUpdate.getSymbole());
             statement.setString(3,toUpdate.getDescription());
@@ -118,12 +117,8 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         catch (SQLException e) {
             log.error("Erreur lors de la mise à jour du produit : {}", e.getMessage());
             throw new SQLException("Erreur lors de la mise à jour du produit : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
-        log.info("DetailProduit updated: {}", toUpdate);
+         log.info("DetailProduit updated: {}", toUpdate);
         if (toUpdate.getId_detail_produit() == 0) {
             throw new SQLException("Aucun produit trouvé avec l'ID: " + toUpdate.getId_detail_produit());
         }
@@ -134,8 +129,9 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
     public DetailProduit toDelete(int id_detail_produit) throws SQLException, ClassNotFoundException {
         String sql = "DELETE FROM detail_produit WHERE id_detail_produit=?";
         DetailProduit detailProduit = null;
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (
+       Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1,id_detail_produit);
             int rows = statement.executeUpdate();
             if (rows > 0) {
@@ -144,11 +140,7 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         } catch (SQLException e) {
             log.error("Erreur lors de la suppression du produit : {}", e.getMessage());
             throw new SQLException("Erreur lors de la suppression du produit : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return detailProduit;
     }
 
@@ -156,8 +148,9 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
     public DetailProduit getById(int id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM detail_produit WHERE id_detail_produit=?";
         DetailProduit detailProduit = null;
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1,id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -167,11 +160,7 @@ public class DetailProduitRepositoriesImpl implements InterfaceDetailProduits<De
         }catch (SQLException e) {
             log.error("Erreur lors de la récupération du produit : {}", e.getMessage());
             throw new SQLException("Erreur lors de la récupération du produit : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return detailProduit;
     }
 }

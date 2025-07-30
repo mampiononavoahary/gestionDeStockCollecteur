@@ -6,18 +6,16 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractSumTransactionRepository {
     private Connection connection;
-
-    // Méthode pour établir une connexion à la base de données
-    private void getConnection() throws SQLException, ClassNotFoundException {
-        if (connection == null || connection.isClosed()) {
-            Connect connect = new Connect();
-            connection = connect.CreateConnection();
-        }
+    private final DataSource dataSource;
+    public ExtractSumTransactionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
-
+   
     // Extraction des données depuis le ResultSet
     private ExtractEnterAndExitCount extractEnterAndExitCount(ResultSet resultSet) throws SQLException {
         double sumEntre = resultSet.getDouble("sum_entre");
@@ -55,10 +53,11 @@ public class ExtractSumTransactionRepository {
             sql.append(" AND DATE(dt.date_de_transaction) BETWEEN ? AND ?");
         }
 
-        getConnection();
         ExtractEnterAndExitCount enterAndExitCount = null;
 
-        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+        try (
+            Connection connection = dataSource.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql.toString())) {
             int paramIndex = 1;
 
             if (lieu != null && !lieu.isEmpty()) {
@@ -77,12 +76,7 @@ public class ExtractSumTransactionRepository {
                     enterAndExitCount = extractEnterAndExitCount(rs);
                 }
             }
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
-
         return enterAndExitCount != null ? enterAndExitCount : new ExtractEnterAndExitCount(0.0, 0.0, 0, 0);
     }
 }

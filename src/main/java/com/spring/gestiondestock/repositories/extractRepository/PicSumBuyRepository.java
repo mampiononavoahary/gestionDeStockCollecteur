@@ -8,13 +8,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class PicSumBuyRepository {
     private static Connection connection;
-    public static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
+    private final DataSource dataSource;
+    public PicSumBuyRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
     private PicSumBuy extractResultSet(ResultSet resultSet) throws SQLException {
         Double sum = resultSet.getDouble("sum");
         String month = resultSet.getString("month");
@@ -43,18 +45,15 @@ public class PicSumBuyRepository {
                 "    month\n" +
                 "ORDER BY\n" +
                 "    month;";
-        getConnection();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try(
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 picSumBuyList.add(extractResultSet(resultSet));
             }
         }catch (SQLException e){
             e.printStackTrace();
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
         return picSumBuyList;
     }

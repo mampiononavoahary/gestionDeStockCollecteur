@@ -16,13 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.sql.DataSource;
+
 @Repository
 public class DetailTransactionRepositoriesImpl {
     private static final Logger log = LoggerFactory.getLogger(DetailTransactionRepositoriesImpl.class);
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource;
+    
+    public DetailTransactionRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     private DetailTransaction extractDetailTransaction(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_detail_transaction");
@@ -38,8 +41,9 @@ public class DetailTransactionRepositoriesImpl {
     public List<DetailTransaction> findAllDetailTransaction() throws SQLException, ClassNotFoundException {
         List<DetailTransaction> detailTransactions = new ArrayList<>();
         String query = "SELECT * FROM detail_transaction";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 detailTransactions.add(extractDetailTransaction(resultSet));
@@ -47,19 +51,16 @@ public class DetailTransactionRepositoriesImpl {
         }catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return detailTransactions;
     }
     public DetailTransaction SaveDetailTransaction(DetailTransaction detailTransaction) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO detail_transaction(type_de_transaction,date_de_transaction,lieu_de_transaction,id_client) " +
                 "VALUES(CAST(? AS type_de_transaction),?,CAST(? AS lieu_de_transaction),?) "+
         "RETURNING id_detail_transaction;";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, detailTransaction.getType_de_transaction().name());
             preparedStatement.setTimestamp(2, detailTransaction.getDate_de_transaction());
             preparedStatement.setString(3, detailTransaction.getLieu_de_transaction().name());
@@ -74,18 +75,14 @@ public class DetailTransactionRepositoriesImpl {
         }catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
         return detailTransaction;
     }
     public DetailTransaction findById(int id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM detail_transaction WHERE id_detail_transaction = ?";
         DetailTransaction detailTransaction = null;
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -94,18 +91,15 @@ public class DetailTransactionRepositoriesImpl {
         }catch (SQLException e) {
             log.error("Erreur lors de la récupération du détail de transaction : {}", e.getMessage());
             throw new SQLException("Erreur lors de la récupération du détail de transaction : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return detailTransaction;
     }
     public DetailTransaction findByTypeDeTransaction(TypeDeTransaction type_de_transaction) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM detail_transaction WHERE type_de_transaction = ?";
         DetailTransaction detailTransaction = null;
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, String.valueOf(TypeDeTransaction.valueOf(String.valueOf(type_de_transaction))));
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -115,11 +109,7 @@ public class DetailTransactionRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de la récupération du détail de transaction par type : {}", e.getMessage());
             throw new SQLException("Erreur lors de la récupération du détail de transaction par type : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return detailTransaction;
     }
     private ExtractDetailTransaction extractDetailTransaction2(ResultSet resultSet2) throws SQLException {
@@ -132,9 +122,10 @@ public class DetailTransactionRepositoriesImpl {
     }
     public List<ExtractDetailTransaction> lastDetailTransaction() throws SQLException, ClassNotFoundException {
         String sql = "SELECT dt.*,c.nom,c.prenom FROM detail_transaction dt INNER JOIN clients c ON dt.id_client = c.id_clients ORDER BY id_detail_transaction DESC LIMIT 4";
-        getConnection();
         List<ExtractDetailTransaction> detail = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 detail.add(extractDetailTransaction2(resultSet));
@@ -143,11 +134,7 @@ public class DetailTransactionRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
       return detail;
     }
 }

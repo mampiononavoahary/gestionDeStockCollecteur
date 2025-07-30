@@ -27,6 +27,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final CorsConfig corsConfig;  // Ajoutez ceci
+    private final UsersRepositoriesImpl usersRepositories;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,7 +46,6 @@ public class SecurityConfig {
     }
     @Bean
     public UserDetailsService customUserDetailsService() {
-        UsersRepositoriesImpl usersRepositories = new UsersRepositoriesImpl();
         return username -> {
             Users user = null;
             try {

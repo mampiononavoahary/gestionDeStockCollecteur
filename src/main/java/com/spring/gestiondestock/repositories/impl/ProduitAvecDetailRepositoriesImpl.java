@@ -12,14 +12,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDetail<ProduitAvecDetail> {
     private static final Logger log = LoggerFactory.getLogger(ProduitAvecDetailRepositoriesImpl.class);
     private static Connection connection;
-    private static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
+    private final DataSource dataSource;
+    public ProduitAvecDetailRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
     private ProduitAvecDetail extract(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_produit_avec_detail");
         Produit produit = Produit.builder().id_produit(resultSet.getInt("id_produit")).build();
@@ -34,8 +36,9 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
     public List<ProduitAvecDetail> getProduitAvecDetail() throws SQLException, ClassNotFoundException {
         List<ProduitAvecDetail> listProduitAvecDetail = new ArrayList<>();
         String sql = "select * from produit_avec_detail";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 ProduitAvecDetail produitAvecDetail = extract(resultSet);
@@ -48,11 +51,7 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return listProduitAvecDetail;
     }
 
@@ -60,8 +59,9 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
     public List<ProduitAvecDetail> createProduitAvecDetails(List<ProduitAvecDetail> toSave) throws SQLException, ClassNotFoundException {
         List<ProduitAvecDetail> listProduitAvecDetail = new ArrayList<>();
         String sql = "insert into produit_avec_detail(produit_id,id_type_produit, detail_produit_id) values(?,?,?)";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+       Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             for (ProduitAvecDetail produitAvecDetail : toSave) {
                 preparedStatement.setInt(1, produitAvecDetail.getId_produit().getId_produit());
                 preparedStatement.setInt(2,produitAvecDetail.getId_type_produit().getId_type_produit());
@@ -77,19 +77,15 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-        return listProduitAvecDetail;
+        }         return listProduitAvecDetail;
     }
 
     @Override
     public ProduitAvecDetail updateProduitAvecDetail(ProduitAvecDetail toUpdate, int id) throws SQLException, ClassNotFoundException {
         String sql = "update produit_avec_detail set id_produit = ?, id_detail_produit = ? where id_produit_avec_detail = ?";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, toUpdate.getId_produit().getId_produit());
             preparedStatement.setInt(2, toUpdate.getId_detail_produit().getId_detail_produit());
             preparedStatement.setInt(3, toUpdate.getId_produit_avec_detail());
@@ -102,20 +98,16 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         catch (SQLException e) {
             log.error("Erreur lors de la mise à jour du produit : {}", e.getMessage());
             throw new SQLException("Erreur lors de la mise à jour du produit : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-        return toUpdate;
+        }         return toUpdate;
     }
 
     @Override
     public ProduitAvecDetail findProduitAvecDetailById(int id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM produit_avec_detail WHERE id_produit_avec_detail = ?";
-        getConnection();
         ProduitAvecDetail produitAvecDetail = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -124,10 +116,6 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         }catch (SQLException e) {
             log.error("Erreur lors de la récupération du produit avec détail : {}", e.getMessage());
             throw new SQLException("Erreur lors de la récupération du produit avec détail : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
         return produitAvecDetail;
     }
@@ -136,8 +124,9 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
     public ProduitAvecDetail deleteProduitAvecDetailById(int id) throws SQLException, ClassNotFoundException {
         String sql = "DELETE FROM produit_avec_detail WHERE id_produit_avec_detail = ?";
         ProduitAvecDetail produitAvecDetail = null;
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1, id);
             int rows = preparedStatement.executeUpdate();
             if (rows > 0) {
@@ -146,19 +135,15 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         }catch (SQLException e) {
             log.error("Erreur lors de la suppression du produit avec détail : {}", e.getMessage());
             throw new SQLException("Erreur lors de la suppression du produit avec détail : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
-        return produitAvecDetail;
+        }         return produitAvecDetail;
     }
 
     @Override
     public ProduitAvecDetail saveProduitAvecDetail(ProduitAvecDetail toSave) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO produit_avec_detail (id_produit, id_type_produit, id_detail_produit) VALUES (?, ?, ?)";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, toSave.getId_produit().getId_produit());
 
             // Assurez-vous que null est bien passé pour id_type_produit
@@ -178,11 +163,7 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return toSave;
     }
 
@@ -198,8 +179,9 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
                 "ON pad.id_produit = p.id_produit INNER JOIN detail_produit dp " +
                 "ON pad.id_detail_produit = dp.id_detail_produit;";
         List<ExtractProduitWitDetail> listProduitWitDetail = new ArrayList<>();
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 listProduitWitDetail.add(extractProduitWitDetail(resultSet));
@@ -208,18 +190,15 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return listProduitWitDetail;
     }
     public ProduitAvecDetail findByName(String name) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM produit_avec_detail pda inner join detail_produit dp on pda.id_detail_produit = dp.id_detail_produit WHERE dp.nom_detail = ?";
-        getConnection();
         ProduitAvecDetail produitAvecDetail = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -229,11 +208,7 @@ public class ProduitAvecDetailRepositoriesImpl implements InterfaceProduitAvecDe
         catch (SQLException e) {
             log.error("Erreur lors de la récupération du produit avec détail par nom : {}", e.getMessage());
             throw new SQLException("Erreur lors de la récupération du produit avec détail par nom : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return produitAvecDetail;
     }
 }

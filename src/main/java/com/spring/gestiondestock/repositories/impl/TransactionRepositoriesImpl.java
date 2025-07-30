@@ -17,16 +17,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Repository
 public class TransactionRepositoriesImpl {
     private static final Logger log = LoggerFactory.getLogger(StockRepositoriesImpl.class);
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
+    private final DataSource dataSource;
+    public TransactionRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
     private Transaction extractTransactionFromResultSet(ResultSet resultSet) throws SQLException {
         int id_transaction = resultSet.getInt("id_transaction");
         ProduitAvecDetail id_produit_avec_detail = ProduitAvecDetail.builder().id_produit_avec_detail(resultSet.getInt("id_produit_avec_detail")).build();
@@ -42,8 +45,9 @@ public class TransactionRepositoriesImpl {
     public List<Transaction> saveAllTransaction(List<Transaction> transactions) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO transactions (id_produit_avec_detail,id_detail_transaction,quantite,unite,prix_unitaire,status,lieu_stock) VALUES (?,?,?,CAST(? AS unite),?,CAST(? AS status),CAST(? AS lieu_de_transaction));";
         List<Transaction> transactionList = new ArrayList<>();
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             for (Transaction transaction : transactions) {
                 ps.setInt(1,transaction.getProduitAvecDetail().getId_produit_avec_detail());
                 ps.setInt(2,transaction.getDetailTransaction().getId_detail_transaction());
@@ -61,18 +65,15 @@ public class TransactionRepositoriesImpl {
         }catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return transactionList;
     }
 
     public  Transaction saveTransaction(Transaction transaction) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO transactions(id_produit_avec_detail,id_detail_transaction,quantite,unite,prix_unitaire,status,lieu_stock) VALUES (?,?,?,CAST(? AS unite),?,CAST(? AS status),CAST(? AS lieu_de_transaction));";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1,transaction.getProduitAvecDetail().getId_produit_avec_detail());
             ps.setInt(2,transaction.getDetailTransaction().getId_detail_transaction());
             ps.setDouble(3,transaction.getQuantite());
@@ -88,18 +89,15 @@ public class TransactionRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return transaction;
     }
     public Transaction deleteTransaction(int id_transaction)  throws SQLException, ClassNotFoundException {
       String sql = "DELETE FROM transactions WHERE id_transaction=?;";
-      getConnection();
       Transaction transaction = null;
-      try(PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
+      try(
+      Connection connection = dataSource.getConnection();   
+      PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
         prepareStatement.setInt(1,id_transaction);
         int rows = prepareStatement.executeUpdate();
         if (rows == 1) {
@@ -108,18 +106,15 @@ public class TransactionRepositoriesImpl {
       }catch (SQLException e) {
         log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
         throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-      } finally {
-        if (connection != null && !connection.isClosed()) {
-          connection.close();
-        }
       }      
       return transaction;
     }
     public Transaction findById(int id_transaction) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM transactions WHERE id_transaction=?;";
-        getConnection();
         Transaction transaction = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)){
             preparedStatement.setInt(1,id_transaction);
            ResultSet resultSet = preparedStatement.executeQuery();
            if (resultSet.next()){
@@ -128,17 +123,14 @@ public class TransactionRepositoriesImpl {
         } catch (SQLException e) {
             throw new SQLException("Erreur lors de la récupération de la transaction avec ID " + id_transaction, e);
         }
-        finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        
         return transaction;
     }
     public void updateStatusTransaction(int id_transaction,String status) throws SQLException, ClassNotFoundException {
       String sql = "UPDATE transactions SET status=CAST(? AS status) WHERE id_transaction=?;";
-      getConnection();
-      try(PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
+      try(
+      Connection connection = dataSource.getConnection();   
+      PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
         prepareStatement.setString(1,status);
         prepareStatement.setInt(2,id_transaction);
         int rows = prepareStatement.executeUpdate();
@@ -149,10 +141,6 @@ public class TransactionRepositoriesImpl {
       catch (SQLException e) {
         log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
         throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-      } finally {
-        if (connection != null && !connection.isClosed()) {
-          connection.close();
-        }
-      }
+      } 
     }
 }

@@ -15,14 +15,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ExtractStockWithProduitAndTransactionRepositories {
     private static Connection connection;
 
-    public static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
+   private final DataSource dataSource;
+    public ExtractStockWithProduitAndTransactionRepositories(DataSource dataSource) {
+        this.dataSource = dataSource;
+    } 
 
     private StockWithProduitAndTransaction extract(ResultSet resultSet) throws SQLException {
         StockWithProduitAndTransaction stockWithProduitAndTransaction = new StockWithProduitAndTransaction();
@@ -68,8 +70,9 @@ public class ExtractStockWithProduitAndTransactionRepositories {
                 "    detail_transaction dt ON t.id_detail_transaction = dt.id_detail_transaction\n" +
                 "JOIN \n" +
                 "    clients c ON dt.id_client = c.id_clients where t.lieu_stock = s.lieu_stock AND s.lieu_stock = ?::lieu_de_transaction AND p.nom_detail = ?;";
-        getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, lieu);
             preparedStatement.setString(2, nom_produit);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -77,10 +80,6 @@ public class ExtractStockWithProduitAndTransactionRepositories {
                 stockWithProduitAndTransactions.add(extract(resultSet));
             }
             return stockWithProduitAndTransactions;
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
     }
 }

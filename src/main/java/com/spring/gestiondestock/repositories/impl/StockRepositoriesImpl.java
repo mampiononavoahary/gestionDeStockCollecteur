@@ -15,13 +15,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class StockRepositoriesImpl {
     private static final Logger log = LoggerFactory.getLogger(StockRepositoriesImpl.class);
     private static Connection connection;
-    public void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    private final DataSource dataSource;
+    public StockRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     private Stock extractStock(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_stock");
@@ -33,8 +35,9 @@ public class StockRepositoriesImpl {
     }
     public Stock findById(int id) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM Stock WHERE id_produit_avec_detail = ?;";
-        getConnection();
-        try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try(
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setInt(1,id);
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()){
@@ -44,17 +47,14 @@ public class StockRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return null;
     }
     public Stock findByLieuAndProduit(String lieu,int produit) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM Stock WHERE lieu_stock = ?::lieu_de_transaction AND id_produit_avec_detail = ?;";
-        getConnection();
-        try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try(
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setString(1,lieu);
             ps.setInt(2,produit);
             ResultSet resultSet = ps.executeQuery();
@@ -65,17 +65,14 @@ public class StockRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return null;
     }
     public Stock findByLieuAndNameProduct(String lieu,String produit) throws SQLException, ClassNotFoundException {
         String sql = "SELECT * FROM Stock s inner join produit_avec_detail pdt on s.id_produit_avec_detail = pdt.id_produit_avec_detail inner join detail_produit dp on dp.id_detail_produit = pdt.id_detail_produit where s.lieu_stock = ?::lieu_de_transaction AND dp.nom_detail = ?;";
-        getConnection();
-        try(PreparedStatement ps = connection.prepareStatement(sql)){
+        try(
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setString(1,lieu);
             ps.setString(2,produit);
             ResultSet resultSet = ps.executeQuery();
@@ -86,17 +83,14 @@ public class StockRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return null;
     }
     public Stock updateStock(Stock stock,int id) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Stock SET lieu_stock = ?::lieu_de_transaction, quantite_stock = ?, unite = ?::unite WHERE id_stock = ?;";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setString(1,stock.getLieu_de_transaction().name());
             ps.setDouble(2,stock.getQuantite_stock());
             ps.setString(3,stock.getUnite().name());
@@ -110,17 +104,14 @@ public class StockRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return stock;
     }
     public Double updateQuantiteStock(Double quantite,int id) throws SQLException, ClassNotFoundException {
         String sql = "UPDATE Stock SET quantite_stock = ? WHERE id_stock = ?;";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setDouble(1,quantite);
             ps.setInt(2,id);
 
@@ -132,17 +123,14 @@ public class StockRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return quantite;
     }
     public Stock saveStock(Stock toSave) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO Stock (lieu_stock,id_produit_avec_detail,quantite_stock,unite) values (CAST(? AS lieu_de_transaction),?,?,CAST(? AS unite));";
-        getConnection();
-        try (PreparedStatement ps = connection.prepareStatement(sql)){
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement ps = connection.prepareStatement(sql)){
             ps.setString(1,toSave.getLieu_de_transaction().name());
             ps.setInt(2,toSave.getProduitAvecDetail().getId_produit_avec_detail());
             ps.setDouble(3,toSave.getQuantite_stock());
@@ -156,11 +144,7 @@ public class StockRepositoriesImpl {
         catch (SQLException e) {
             log.error("Erreur lors de l'exécution de la requête : {}", e.getMessage());
             throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return toSave;
     }
 }

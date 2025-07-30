@@ -13,13 +13,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
-    private static Connection connection;
+    private final DataSource dataSource;
 
-    private static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
+    public UsersRepositoriesImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     private Users extractUserFromResultSet(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id_user");
@@ -38,8 +39,9 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
     public List<Users> getAll() throws SQLException, ClassNotFoundException {
         List<Users> users = new ArrayList<>();
         String query = "SELECT * FROM users";
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (
+            Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 users.add(extractUserFromResultSet(resultSet));
@@ -47,16 +49,9 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
             for (Users user : users) {
                 System.out.println(user);
             }
-        }
-        catch (SQLException e) {
-            throw new SQLException("Erreur lors de l'exécution de la requête : " + e.getMessage(), e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
         return users;
-    }
+    }    
 
     @Override
     public Users getById(int id) {
@@ -81,8 +76,9 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
     @Override
     public Users findByName(String username) throws SQLException, ClassNotFoundException {
         String query = "SELECT * FROM users WHERE username = ?";
-        getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (
+            Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -90,11 +86,6 @@ public class UsersRepositoriesImpl implements InterfaceUsers<Users> {
             }
         }catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
         return null; // Retourne null si aucun utilisateur trouvé
     }

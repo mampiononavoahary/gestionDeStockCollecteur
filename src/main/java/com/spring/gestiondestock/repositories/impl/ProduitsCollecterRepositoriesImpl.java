@@ -20,23 +20,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 @Repository
 public class ProduitsCollecterRepositoriesImpl {
     private static Connection connection;
 
     private final InterfaceCreditCollecteur interfaceCreditCollecteur;
+    private final DataSource dataSource;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public ProduitsCollecterRepositoriesImpl(InterfaceCreditCollecteur interfaceCreditCollecteur) {
+    public ProduitsCollecterRepositoriesImpl(InterfaceCreditCollecteur interfaceCreditCollecteur, DataSource dataSource) {
         this.interfaceCreditCollecteur = interfaceCreditCollecteur;
+        this.dataSource = dataSource;
     }
-
-    public static void getConnection() throws SQLException, ClassNotFoundException {
-        Connect connect = new Connect();
-        connection = connect.CreateConnection();
-    }
+    
     private ProduitsCollecter extractProduitsCollecter(ResultSet resultSet) throws SQLException {
         ProduitsCollecter produitsCollecter = new ProduitsCollecter();
         produitsCollecter.setIdProduitCollecter(resultSet.getLong("id_produit_collecter"));
@@ -49,10 +49,11 @@ public class ProduitsCollecterRepositoriesImpl {
         return produitsCollecter;
     }
     public List<ProduitsCollecter> getAllProduitsCollecter() throws SQLException, ClassNotFoundException {
-        getConnection();
         String query = "SELECT * FROM produits_collecter";
         List<ProduitsCollecter> produitsCollecters = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 ProduitsCollecter produitsCollecter = extractProduitsCollecter(resultSet);
@@ -61,16 +62,13 @@ public class ProduitsCollecterRepositoriesImpl {
             return produitsCollecters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
-        }
+        } 
     }
     public ProduitsCollecter createProduitsCollecter(ProduitsCollecter produitsCollecter) throws SQLException, ClassNotFoundException {
-        getConnection();
         String query = "INSERT INTO produits_collecter (id_debit_collecteur, id_produit_avec_detail, quantite, unite, prix_unitaire, lieu_stock) VALUES (?, ?, ?, CAST(? AS unite), ?, CAST(? AS lieu_de_transaction))";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (
+        Connection connection = dataSource.getConnection();     
+        PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, produitsCollecter.getDebitCollecteur().getIdDebitCollecteur());
             preparedStatement.setInt(2, produitsCollecter.getProduitAvecDetail());
             preparedStatement.setDouble(3, produitsCollecter.getQuantite());
@@ -81,10 +79,6 @@ public class ProduitsCollecterRepositoriesImpl {
             return produitsCollecter;
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }finally {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-            }
         }
     }
     private double calculMontant(double quantite, double prix, Unite unite) {
