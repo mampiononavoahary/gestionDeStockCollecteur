@@ -19,7 +19,7 @@ public class CorsConfig {
         config.setAllowedHeaders(List.of("Authorization", "Content-Type","Origin","Accept"));
         config.setAllowCredentials(true);
 
-        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("https://gestionofstock.vercel.app");
         config.addAllowedHeader("Authorization");
         config.addAllowedHeader("Content-Type");
 

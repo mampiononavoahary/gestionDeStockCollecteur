@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class ExtraxtSumTransactionService {
     private static ExtractSumTransactionRepository extractSumTransactionRepository;
     public ExtraxtSumTransactionService(ExtractSumTransactionRepository extractSumTransactionRepository) {
-        this.extractSumTransactionRepository = new ExtractSumTransactionRepository();
+        ExtraxtSumTransactionService.extractSumTransactionRepository = extractSumTransactionRepository;
     }
     public ExtractEnterAndExitCount SumTransactionEnterAndExit(String lieu, Date date, Date dateBebut,Date dateFin) throws SQLException, ClassNotFoundException {
         return extractSumTransactionRepository.SumTransactionEnterAndExit(lieu, date,dateBebut,dateFin);
